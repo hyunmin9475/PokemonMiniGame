@@ -1,88 +1,410 @@
-/*
-#include <stdio.h>
+#include<stdio.h>
 #include<conio.h>
 #include<stdlib.h>
 #include<time.h>
-#define EMPTY -1
 #include<windows.h>
 
-void SetColor(int color,int back)
+static void SetColor(int color, int back)
 {
-	SetConsolTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color|back);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color | (back << 4));
 }
 
-typedef struct
+//파이리!
+void Charmander(void)
 {
-	int r, g, b;
-} Pixel;
+	int Charmander[22][22] = {
+		{15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,15,15,15,15},
+		{15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,0,6,0,15,15,15},
+		{15,15,15,0,0,13,13,6,0,15,15,15,15,15,15,15,0,6,6,0,15,15},
+		{15,15,0,13,13,13,13,13,6,0,15,15,15,15,15,15,0,6,6,0,15,15},
+		{15,15,0,13,13,13,13,13,13,0,15,15,15,15,15,0,6,6,13,6,0,15},
+		{15,0,13,13,13,13,6,13,13,6,0,15,15,15,15,0,6,13,14,6,0,15},
+		{15,0,13,13,13,6,15,0,13,13,0,15,15,15,15,0,6,14,14,6,0,15},
+		{0,13,13,13,13,4,9,0,13,6,0,15,15,15,15,15,0,14,6,0,15,15},
+		{0,13,13,13,13,13,0,0,6,6,0,15,15,15,15,15,0,6,0,15,15,15},
+		{15,0,6,13,13,13,6,6,6,6,6,0,15,15,15,15,0,13,0,15,15,15},
+		{15,15,0,0,6,6,6,6,6,6,6,0,15,15,15,0,13,13,0,15,15,15},
+		{15,15,15,15,0,0,2,6,6,8,6,6,0,15,0,6,13,0,15,15,15,15},
+		{15,15,15,15,15,0,14,14,8,4,13,6,6,0,6,6,6,0,15,15,15,15},
+		{15,15,15,15,15,0,14,14,8,13,6,8,6,6,8,6,0,15,15,15,15,15},
+		{15,15,15,15,0,4,4,14,14,8,8,6,6,6,8,0,15,15,15,15,15,15},
+		{15,15,15,15,0,2,4,8,2,2,6,6,6,4,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,0,0,0,0,8,4,6,4,0,15,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,15,4,15,0,15,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,15}
+    };
 
-int main(void)
+	for (int i = 0; i < 22; i++)
+	{
+		for (int j = 0; j < 22; j++)
+		{
+			if (Charmander[i][j] == 15)
+			{
+				SetColor(15, 15);
+			}
+			else if (Charmander[i][j] == 0)
+			{
+				SetColor(0, 0);
+			}
+			else if (Charmander[i][j] == 13)
+			{
+				SetColor(13, 13);
+			}
+			else if (Charmander[i][j] == 6)
+			{
+				SetColor(6, 6);
+			}
+			else if (Charmander[i][j] == 4)
+			{
+				SetColor(4, 4);
+			}
+			else if (Charmander[i][j] == 14)
+			{
+				SetColor(14, 14);
+			}
+			else if (Charmander[i][j] == 12)
+			{
+				SetColor(12, 12);
+			}
+			else if (Charmander[i][j] == 8)
+			{
+				SetColor(8, 8);
+			}
+			else if (Charmander[i][j] == 10)
+			{
+				SetColor(10, 10);
+			}
+			else if (Charmander[i][j] == 9)
+			{
+				SetColor(9, 9);
+			}
+			else if (Charmander[i][j] == 2)
+			{
+				SetColor(2, 2);
+			}
+			printf("  ");
+		}
+		printf("\n");
+	}
+	SetColor(15, 0);
+}
+
+//꼬부기
+void Squirtle(void)
 {
-	int width = 22, height = 22;
-	Pixel image[22][22] = {
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{0,0,0},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{0,0,0},{197,96,27},{197,96,27},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{161,80,23},{197,96,27},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{161,80,23},{197,96,27},{197,96,27},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{161,80,23},{197,96,27},{255,228,0},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{197,96,27},{197,96,27},{161,80,23},{255,255,255},{0,0,0},{197,96,27},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{255,228,0},{255,228,0},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY}},
-		{{0,0,0},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{111,55,18},{11,85,4},{0,0,0},{197,96,27},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{255,228,0},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{0,0,0},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{197,96,27},{0,0,0},{0,0,0},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{197,96,27},{197,96,27},{197,96,27},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{0,0,0},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{197,96,27},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}},
-		{{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{0,0,0},{0,0,0},{150,141,70},{111,55,18},{111,55,18},{47,46,32},{161,80,23},{161,80,23},{0,0,0},{EMPTY,EMPTY,EMPTY},{0,0,0},{161,80,23},{197,96,27},{0,0,0},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY},{EMPTY,EMPTY,EMPTY}}
+	int Squirtle[22][22] = {
+		{15,15,15,0,0,0,0,15,15,15,15,15,15,15,15,15,0,0,0,15,15},
+		{15,15,0,3,9,9,9,0,0,15,15,15,15,15,15,0,9,9,9,0,15},
+		{15,0,9,9,9,9,9,9,3,0,0,15,15,15,0,9,9,9,3,3,0},
+		{15,0,9,9,9,9,9,9,9,8,2,0,0,15,0,9,9,3,8,3,0},
+		{0,9,9,9,9,3,9,9,9,3,8,10,2,0,3,9,3,8,3,3,0},
+		{0,9,9,9,3,15,0,9,9,3,8,2,10,2,8,3,3,8,3,0,15},
+		{0,9,9,9,3,0,0,9,3,3,8,15,2,10,8,3,3,8,0,15,15},
+		{15,0,9,9,9,0,10,3,3,8,15,15,2,10,2,8,3,0,15,15,15},
+		{15,15,0,8,3,3,3,3,8,3,8,15,15,2,10,8,3,0,15,15,15},
+		{15,15,0,3,8,8,8,10,14,8,9,8,15,2,2,8,0,15,15,15,15},
+		{15,15,15,0,0,14,14,14,8,9,9,9,8,2,10,0,15,15,15,15,15},
+		{15,15,15,15,15,0,10,10,8,9,9,3,8,2,10,0,15,15,15,15,15},
+		{15,15,15,15,0,3,8,14,14,8,3,8,8,15,0,15,15,15,15,15,15},
+		{15,15,15,15,0,3,3,0,10,10,8,8,3,8,0,15,15,15,15,15,15},
+		{15,15,15,15,15,0,0,15,0,8,9,3,3,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,3,3,3,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15}
 	};
 
 	for (int i = 0; i < 22; i++)
 	{
 		for (int j = 0; j < 22; j++)
 		{
-			if (image[i][j] == {EMPTY, EMPTY, EMPTY})
+			if (Squirtle[i][j] == 3)
+			{
+				SetColor(9, 9);
+			}
+			else if (Squirtle[i][j] == 9)
+			{
+				SetColor(3, 3);
+			}
+			else if (Squirtle[i][j] == 15)
 			{
 				SetColor(15,15);
 			}
-			else if (image[i][j] == {0, 0, 0})
+			else if (Squirtle[i][j] == 0)
 			{
-				SetColor(0, 0);
+				SetColor(0,0);
 			}
-			else if (image[i][j] == {197, 96, 27})
+			else if (Squirtle[i][j] == 8)
 			{
-				SetColor(13, 13);
+				SetColor(8,8);
 			}
-			else if (image[i][j] == {161, 80, 23})
+			else if (Squirtle[i][j] == 14)
 			{
-				SetColor(6, 6);
+				SetColor(14,14);
 			}
-			else if (image[i][j] == {111, 55, 18})
+			else if (Squirtle[i][j] == 10)
 			{
-				SetColor(4, 4);
+				SetColor(10,10);
 			}
-			else if (image[i][j] == {255, 255, 255})
+			else if (Squirtle[i][j] == 2)
 			{
-				SetColor(15,15);
+				SetColor(2,2);
 			}
-			else if (image[i][j] == {255, 228, 0})
-			{
-				SetColor(14, 14);
-			}
-			else if (image[i][j] == {150, 141, 70})
-			{
-				SetColor(12, 12);
-			}
-			else if (image[i][j] == {47, 46, 32})
-			{
-				SetColor(8, 8);
-			}
-			else if (image[i][j] == {206, 191, 70})
-			{
-				SetColor(10, 10);
-			}
-			printf("ㅇ");
+			printf("  ");
 		}
 		printf("\n");
 	}
-	
+	SetColor(15, 0);
+}
 
+//이상해씨
+void Bulbasaur(void)
+{
+	int Bulbasaur[22][22] = {
+		{15,15,15,15,15,15,15,15,15,15,15,15,0,15,0,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,15,0,10,0,10,0,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,2,10,2,0,15,15,15,15},
+		{15,15,15,15,15,15,15,15,0,0,2,9,9,2,9,2,0,0,15,15},
+		{15,15,15,15,15,15,15,0,2,2,9,2,9,2,9,2,2,9,0,15},
+		{15,15,15,0,15,15,0,9,2,9,2,2,9,2,2,9,2,2,9,0},
+		{15,15,0,10,0,0,8,9,9,9,2,9,2,2,2,2,9,2,9,0},
+		{15,15,0,10,10,10,2,8,8,9,9,9,2,2,2,2,9,9,9,0},
+		{15,15,0,10,10,2,9,9,2,8,9,9,9,9,9,9,9,9,9,0},
+		{15,0,10,10,10,9,9,9,10,2,8,8,8,9,9,9,9,9,0,15},
+		{15,0,2,10,10,10,10,10,10,10,10,10,8,9,9,9,8,0,15,15},
+		{0,4,9,10,10,10,2,10,10,10,10,8,2,8,8,8,2,0,15,15},
+		{0,10,10,10,10,9,10,8,0,8,10,2,2,2,2,2,9,9,0,15},
+		{15,0,10,10,10,10,0,0,15,15,2,2,2,8,2,2,9,9,0,15},
+		{15,0,2,10,10,10,0,4,15,2,2,2,9,9,8,2,2,2,0,15},
+		{15,15,0,0,2,2,2,2,2,2,8,2,9,9,8,2,15,0,15,15},
+		{15,15,15,15,0,0,0,0,0,0,2,2,2,2,8,0,0,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,15,2,15,8,0,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,0,15,15,15,15,15,15}
+	};
+
+	for (int i = 0; i < 22; i++)
+	{
+		for (int j = 0; j < 22; j++)
+		{
+			if (Bulbasaur[i][j] == 2)
+			{
+				SetColor(2, 2);
+			}
+			else if (Bulbasaur[i][j] == 10)
+			{
+				SetColor(10, 10);
+			}
+			else if (Bulbasaur[i][j] == 9)
+			{
+				SetColor(80,80);
+			}
+			else if (Bulbasaur[i][j] == 0)
+			{
+				SetColor(0,0);
+			}
+			else if (Bulbasaur[i][j] == 15)
+			{
+				SetColor(15,15);
+			}
+			else if (Bulbasaur[i][j] == 8)
+			{
+				SetColor(8,8);
+			}
+			else if (Bulbasaur[i][j] == 4)
+			{
+				SetColor(4,4);
+			}
+			printf("  ");
+		}
+		printf("\n");
+	}
+	SetColor(15, 0);
+}
+
+struct Pokemon {
+	char* name;
+	int hp;
+	char* type;
+};
+
+int Battle(int monster, char* name, int monhp, int type, int* hp)
+{
+	int skill = 0;
+	if (monster == 1)
+	{
+		Charmander();
+	}
+	else if (monster == 2)
+	{
+		Squirtle();
+	}
+	else if (monster == 3)
+	{
+		Bulbasaur();
+	}
+	printf("%s 가 승부를 걸어왔다. \n\n", name);
+	printf("%s \n", name);
+	printf("HP: %d  타입: ", monhp);
+	if (type == 1)
+	{
+		printf("불\n\n");
+	}
+	else if (type == 2)
+	{
+		printf("물\n\n");
+	}
+	else if (type == 3)
+	{
+		printf("풀\n\n");
+	}
+
+	while (1)
+	{
+		int i = 0;
+		printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
+		scanf_s("%d", &i);
+		if (i == 1)
+		{
+			printf("\n불꽃세례!!\n");
+			if (type == 3)
+			{
+				monhp -= 30 * 2;
+			}
+			else
+			{
+				monhp -= 30;
+			}
+			printf("%s의 체력이 %d로 줄었다! \n\n", name, monhp);
+		}
+		else if (i == 2)
+		{
+			printf("\n물대포!!\n");
+			if (type == 1)
+			{
+				monhp -= 30 * 2;
+			}
+			else
+			{
+				monhp -= 30;
+			}
+			printf("%s의 체력이 %d로 줄었다!\n\n", name, monhp);
+		}
+		else if (i == 3)
+		{
+			printf("\n덩굴채찍!!\n");
+			if (type == 2)
+			{
+				monhp -= 30 * 2;
+			}
+			else
+			{
+				monhp -= 30;
+			}
+			printf("%s의 체력이 %d으로 줄었다!\n\n", name, monhp);
+		}
+		else if (i == 4)
+		{
+			printf("체력을 회복했다!\n");
+			*hp += 50;
+			if (*hp > 100)*hp = 100;
+			printf("체력이 %d가 되었다.\n\n", *hp);
+		}
+		else
+		{
+			printf("존재하지 않는 선택지입니다. \n\n");
+			continue;
+		}
+
+		if (monhp <= 0)
+		{
+			printf("전투에서 승리했다! \n");
+			return 0;
+		}
+
+		//상대 턴
+		printf("%s의 몸통박치기!\n", name);
+		*hp -= 30;
+		printf("체력이 30 줄었다! %d/100 \n\n", *hp);
+
+		if (*hp <= 0)
+		{
+			printf("눈 앞이 하얘졌다!\n\n");
+			return 1;
+		}
+	}
+}
+
+int main(void)
+{
+
+	//포켓몬 정보
+	struct Pokemon pokemon1 = { "파이리", 100, "불" };
+	struct Pokemon pokemon2 = { "꼬부기", 100, "물" };
+	struct Pokemon pokemon3 = { "이상해씨",100,"풀" };
+
+	while (1)
+	{
+		//플레이어 정보
+		int hp = 100;
+		int xp = 0;
+		int monster = 0;
+		int win = 0, quit = 0;
+
+		while (1)
+		{
+			printf("세 포켓몬 중 누구와 싸울텐가?\n\n");
+			Charmander();
+			printf("\n\n\n1: %s      타입:%s \n\n", pokemon1.name, pokemon1.type);
+			Squirtle();
+			printf("\n\n\n2: %s      타입:%s \n\n", pokemon2.name, pokemon2.type);
+			Bulbasaur();
+			printf("\n\n\n3: %s      타입:%s \n\n", pokemon3.name, pokemon3.type);
+
+			scanf_s("%d", &monster);
+			//int battle(int monster, int* name, int monhp, int type, int* hp)
+			if (monster == 1)
+			{
+				win = Battle(1, pokemon1.name, 100, 1, &hp);
+			}
+			else if (monster == 2)
+			{
+				win = Battle(2, pokemon2.name, 100, 2, &hp);
+			}
+			else if (monster == 3)
+			{
+				win = Battle(3, pokemon3.name, 100, 3, &hp);
+			}
+			else
+			{
+				printf("\n존재하지 않는 선택지 입니다.\n");
+				continue;
+			}
+			//승패에 따른 보상
+			if (win == 0) {
+				xp += 25;
+				printf("경험치를 획득했습니다!\n");
+				printf("%d/100\n\n", xp);
+			}
+			else if (win == 1)
+			{
+				printf("패배하였습니다.\n체력이 회복됩니다.\n\n");
+				hp = 100;
+				continue;
+			}
+
+			if (xp >= 100)
+			{
+				break;
+			}
+		}
+		printf("다시 플레이 하시겠습니까?\n");
+		printf("YES: 1    NO:Other Number \n\n");
+		scanf_s("%d", &quit);
+
+		if (quit != 1)
+		{
+			printf("이용해주셔서 감사합니다.\n");
+			break;
+		}
+	}
+	
 	return 0;
-}*/
+}
