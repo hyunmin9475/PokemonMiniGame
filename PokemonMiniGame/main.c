@@ -4,16 +4,40 @@
 #include<time.h>
 #include<windows.h>
 
-static void SetColor(int color, int back)
-{
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color | (back << 4));
-}
+////////////////
+////함수////////
+///////////////
 
-//파이리!
-void Charmander(void)
+//도트 색 변경 함수 선언
+static void SetColor(int color, int back);
+
+//도트 출력 함수 선언
+void DotPrintPokemon(struct Pokemon pokemon);
+
+//배틀 함수 선언
+int Battle(struct Pokemon pokemon, int* hp);
+
+////////////////////구조체///////////////////////////
+struct Pokemon {
+	int PokeNum;  //포켓몬 고유 번호
+	char* name;   //포켓몬의 이름
+	int monhp;    //포켓몬의 체력
+	char* type;   //포켓몬의 타입
+	int typeNum;  //타입 고유 번호
+	int DotPokemon[22][22]; //도트 배열
+};
+////////////////메인 함수////////////////////
+int main(void)
 {
-	int Charmander[22][22] = {
-		{15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,15,15,15,15},
+	while (1)
+	{
+		////////////
+		//초기화////
+		///////////
+		
+		////////////////포켓몬 초기화   몬스터 번호, 이름, 체력, 타입, 타입 번호, 도트
+		struct Pokemon pokemon[3] = {
+			{1,"파이리",100,"불",1,{{15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,15,15,15,15},
 		{15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,0,6,0,15,15,15},
 		{15,15,15,0,0,13,13,6,0,15,15,15,15,15,15,15,0,6,6,0,15,15},
 		{15,15,0,13,13,13,13,13,6,0,15,15,15,15,15,15,0,6,6,0,15,15},
@@ -31,69 +55,8 @@ void Charmander(void)
 		{15,15,15,15,0,2,4,8,2,2,6,6,6,4,0,15,15,15,15,15,15,15},
 		{15,15,15,15,15,0,0,0,0,8,4,6,4,0,15,15,15,15,15,15,15,15},
 		{15,15,15,15,15,15,15,15,15,0,15,4,15,0,15,15,15,15,15,15,15,15},
-		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,15}
-    };
-
-	for (int i = 0; i < 22; i++)
-	{
-		for (int j = 0; j < 22; j++)
-		{
-			if (Charmander[i][j] == 15)
-			{
-				SetColor(15, 15);
-			}
-			else if (Charmander[i][j] == 0)
-			{
-				SetColor(0, 0);
-			}
-			else if (Charmander[i][j] == 13)
-			{
-				SetColor(13, 13);
-			}
-			else if (Charmander[i][j] == 6)
-			{
-				SetColor(6, 6);
-			}
-			else if (Charmander[i][j] == 4)
-			{
-				SetColor(4, 4);
-			}
-			else if (Charmander[i][j] == 14)
-			{
-				SetColor(14, 14);
-			}
-			else if (Charmander[i][j] == 12)
-			{
-				SetColor(12, 12);
-			}
-			else if (Charmander[i][j] == 8)
-			{
-				SetColor(8, 8);
-			}
-			else if (Charmander[i][j] == 10)
-			{
-				SetColor(10, 10);
-			}
-			else if (Charmander[i][j] == 9)
-			{
-				SetColor(9, 9);
-			}
-			else if (Charmander[i][j] == 2)
-			{
-				SetColor(2, 2);
-			}
-			printf("  ");
-		}
-		printf("\n");
-	}
-	SetColor(15, 0);
-}
-
-//꼬부기
-void Squirtle(void)
-{
-	int Squirtle[22][22] = {
-		{15,15,15,0,0,0,0,15,15,15,15,15,15,15,15,15,0,0,0,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,15}}},//여기까지 파이리
+			{2,"꼬부기",100,"물",2,{{15,15,15,0,0,0,0,15,15,15,15,15,15,15,15,15,0,0,0,15,15},
 		{15,15,0,3,9,9,9,0,0,15,15,15,15,15,15,0,9,9,9,0,15},
 		{15,0,9,9,9,9,9,9,3,0,0,15,15,15,0,9,9,9,3,3,0},
 		{15,0,9,9,9,9,9,9,9,8,2,0,0,15,0,9,9,3,8,3,0},
@@ -109,57 +72,8 @@ void Squirtle(void)
 		{15,15,15,15,0,3,3,0,10,10,8,8,3,8,0,15,15,15,15,15,15},
 		{15,15,15,15,15,0,0,15,0,8,9,3,3,0,15,15,15,15,15,15,15},
 		{15,15,15,15,15,15,15,15,15,0,3,3,3,0,15,15,15,15,15,15,15},
-		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15}
-	};
-
-	for (int i = 0; i < 22; i++)
-	{
-		for (int j = 0; j < 22; j++)
-		{
-			if (Squirtle[i][j] == 3)
-			{
-				SetColor(9, 9);
-			}
-			else if (Squirtle[i][j] == 9)
-			{
-				SetColor(3, 3);
-			}
-			else if (Squirtle[i][j] == 15)
-			{
-				SetColor(15,15);
-			}
-			else if (Squirtle[i][j] == 0)
-			{
-				SetColor(0,0);
-			}
-			else if (Squirtle[i][j] == 8)
-			{
-				SetColor(8,8);
-			}
-			else if (Squirtle[i][j] == 14)
-			{
-				SetColor(14,14);
-			}
-			else if (Squirtle[i][j] == 10)
-			{
-				SetColor(10,10);
-			}
-			else if (Squirtle[i][j] == 2)
-			{
-				SetColor(2,2);
-			}
-			printf("  ");
-		}
-		printf("\n");
-	}
-	SetColor(15, 0);
-}
-
-//이상해씨
-void Bulbasaur(void)
-{
-	int Bulbasaur[22][22] = {
-		{15,15,15,15,15,15,15,15,15,15,15,15,0,15,0,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15}}}, //여기까지 꼬부기
+			{3,"이상해씨",100,"풀",3,{{15,15,15,15,15,15,15,15,15,15,15,15,0,15,0,15,15,15,15,15},
 		{15,15,15,15,15,15,15,15,15,15,15,0,10,0,10,0,15,15,15,15},
 		{15,15,15,15,15,15,15,15,15,15,0,0,2,10,2,0,15,15,15,15},
 		{15,15,15,15,15,15,15,15,0,0,2,9,9,2,9,2,0,0,15,15},
@@ -177,40 +91,134 @@ void Bulbasaur(void)
 		{15,15,0,0,2,2,2,2,2,2,8,2,9,9,8,2,15,0,15,15},
 		{15,15,15,15,0,0,0,0,0,0,2,2,2,2,8,0,0,15,15,15},
 		{15,15,15,15,15,15,15,15,15,0,15,2,15,8,0,15,15,15,15,15},
-		{15,15,15,15,15,15,15,15,15,15,0,0,0,0,15,15,15,15,15,15}
-	};
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,0,15,15,15,15,15,15}}}  //여기까지 이상해씨
+		};
 
+		//////////////////////////////////플레이어 초기화
+		int hp = 100;   //플레이어 체력
+		int xp = 0;     //플레이어 경험치
+		int pokeNum = 0;//상대 선택용 변수
+		int win = 0, quit = 0; //승패 기록용, 다시하기 여부 변수
+
+		//게임시작!!!!!!!!!!!!!!!
+		while (1)
+		{
+			printf("세 포켓몬 중 누구와 싸울텐가?\n\n"); //////////선택지 제시, 야생 몬스터 도트 출력과 정보 표시
+			DotPrintPokemon(pokemon[0]);
+			printf("\n\n\n1: %s      타입:%s \n\n", pokemon[0].name, pokemon[0].type);
+			DotPrintPokemon(pokemon[1]);
+			printf("\n\n\n2: %s      타입:%s \n\n", pokemon[1].name, pokemon[1].type);
+			DotPrintPokemon(pokemon[2]);
+			printf("\n\n\n3: %s      타입:%s \n\n", pokemon[2].name, pokemon[2].type);
+
+			//////////////야생 포켓몬 선택
+			scanf_s("%d", &pokeNum);
+			if (pokeNum != 1 && pokeNum != 2 && pokeNum != 3)
+				continue;   /////선택지 외의 숫자 선택 시 다시 선택
+
+			//int battle(struct Pokemon pokemon, int* hp);
+			win = Battle(pokemon[pokeNum-1], &hp); //////////////////배틀함수 호출
+
+			///////////////////////////////승패에 따른 보상
+			if (win == 0) {
+				xp += 25;
+				printf("경험치를 획득했습니다!\n");
+				printf("%d/100\n\n", xp);
+			}
+			else if (win == 1)
+			{
+				printf("패배하였습니다.\n체력이 회복됩니다.\n\n");
+				hp = 100;
+				continue;
+			}
+			/////////////////////////경험치 다 채우면 나가기
+			if (xp >= 100)
+			{
+				break;
+			}
+		}
+		printf("다시 플레이 하시겠습니까?\n");  /////////////////다시하기 기능
+		printf("YES: 1    NO:Other Number \n\n");
+		scanf_s("%d", &quit);
+
+		if (quit != 1)
+		{
+			printf("이용해주셔서 감사합니다.\n");
+			break;
+		}
+	}
+	
+	return 0;
+}
+
+////////////////////
+/////함수함수함수//////////////////////////////////////////////////////////////////////////
+////////////////////
+
+/////////////////색 변경 함수
+static void SetColor(int color, int back)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color | (back << 4));
+}
+
+/////////////////도트 출력 함수
+void DotPrintPokemon(struct Pokemon pokemon)
+{
 	for (int i = 0; i < 22; i++)
 	{
 		for (int j = 0; j < 22; j++)
 		{
-			if (Bulbasaur[i][j] == 2)
+			if (pokemon.DotPokemon[i][j] == 15)
 			{
-				SetColor(2, 2);
+				SetColor(15, 15);
 			}
-			else if (Bulbasaur[i][j] == 10)
+			else if (pokemon.DotPokemon[i][j] == 0)
+			{
+				SetColor(0, 0);
+			}
+			else if (pokemon.DotPokemon[i][j] == 13)
+			{
+				SetColor(13, 13);
+			}
+			else if (pokemon.DotPokemon[i][j] == 6)
+			{
+				SetColor(6, 6);
+			}
+			else if (pokemon.DotPokemon[i][j] == 4)
+			{
+				SetColor(4, 4);
+			}
+			else if (pokemon.DotPokemon[i][j] == 14)
+			{
+				SetColor(14, 14);
+			}
+			else if (pokemon.DotPokemon[i][j] == 12)
+			{
+				SetColor(12, 12);
+			}
+			else if (pokemon.DotPokemon[i][j] == 8)
+			{
+				SetColor(8, 8);
+			}
+			else if (pokemon.DotPokemon[i][j] == 10)
 			{
 				SetColor(10, 10);
 			}
-			else if (Bulbasaur[i][j] == 9)
+			else if (pokemon.DotPokemon[i][j] == 9)
 			{
-				SetColor(80,80);
+				SetColor(9, 9);
 			}
-			else if (Bulbasaur[i][j] == 0)
+			else if (pokemon.DotPokemon[i][j] == 2)
 			{
-				SetColor(0,0);
+				SetColor(2, 2);
 			}
-			else if (Bulbasaur[i][j] == 15)
+			else if (pokemon.DotPokemon[i][j] == 3)
 			{
-				SetColor(15,15);
+				SetColor(3, 3);
 			}
-			else if (Bulbasaur[i][j] == 8)
+			else if (pokemon.DotPokemon[i][j] == 10)
 			{
-				SetColor(8,8);
-			}
-			else if (Bulbasaur[i][j] == 4)
-			{
-				SetColor(4,4);
+				SetColor(10, 10);
 			}
 			printf("  ");
 		}
@@ -218,33 +226,15 @@ void Bulbasaur(void)
 	}
 	SetColor(15, 0);
 }
-//구조체에 더 많은 정보
-struct Pokemon {
-	int monster;
-	char* name;
-	int monhp;
-	char* type;
-	int typeNum;
-};
 
-int Battle(struct Pokemon*pokemon, int* hp)
+///////////////// 배틀함수
+int Battle(struct Pokemon pokemon, int* hp)
 {
 	int skill = 0;
-	if (pokemon->monster == 1)
-	{
-		Charmander();
-	}
-	else if (pokemon->monster == 2)
-	{
-		Squirtle();
-	}
-	else if (pokemon->monster == 3)
-	{
-		Bulbasaur();
-	}
-	printf("%s 가 승부를 걸어왔다. \n\n", pokemon->name);
-	printf("%s \n", pokemon->name);
-	printf("HP: %d  타입: %s \n\n", pokemon->monhp, pokemon->type);
+	DotPrintPokemon(pokemon);
+	printf("%s 가 승부를 걸어왔다. \n\n", pokemon.name);
+	printf("%s \n", pokemon.name);
+	printf("HP: %d  타입: %s \n\n", pokemon.monhp, pokemon.type);
 
 	while (1)
 	{
@@ -254,41 +244,41 @@ int Battle(struct Pokemon*pokemon, int* hp)
 		if (i == 1)
 		{
 			printf("\n불꽃세례!!\n");
-			if (pokemon->typeNum == 3)
+			if (pokemon.typeNum == 3)
 			{
-				pokemon->monhp -= 30 * 2;
+				pokemon.monhp -= 30 * 2;
 			}
 			else
 			{
-				pokemon->monhp -= 30;
+				pokemon.monhp -= 30;
 			}
-			printf("%s의 체력이 %d로 줄었다! \n\n", pokemon->name, pokemon->monhp);
+			printf("%s의 체력이 %d로 줄었다! \n\n", pokemon.name, pokemon.monhp);
 		}
 		else if (i == 2)
 		{
 			printf("\n물대포!!\n");
-			if (pokemon->typeNum == 1)
+			if (pokemon.typeNum == 1)
 			{
-				pokemon->monhp -= 30 * 2;
+				pokemon.monhp -= 30 * 2;
 			}
 			else
 			{
-				pokemon->monhp -= 30;
+				pokemon.monhp -= 30;
 			}
-			printf("%s의 체력이 %d로 줄었다!\n\n", pokemon->name, pokemon->monhp);
+			printf("%s의 체력이 %d로 줄었다!\n\n", pokemon.name, pokemon.monhp);
 		}
 		else if (i == 3)
 		{
 			printf("\n덩굴채찍!!\n");
-			if (pokemon->typeNum == 2)
+			if (pokemon.typeNum == 2)
 			{
-				pokemon->monhp -= 30 * 2;
+				pokemon.monhp -= 30 * 2;
 			}
 			else
 			{
-				pokemon->monhp -= 30;
+				pokemon.monhp -= 30;
 			}
-			printf("%s의 체력이 %d으로 줄었다!\n\n", pokemon->name, pokemon->monhp);
+			printf("%s의 체력이 %d으로 줄었다!\n\n", pokemon.name, pokemon.monhp);
 		}
 		else if (i == 4)
 		{
@@ -303,14 +293,14 @@ int Battle(struct Pokemon*pokemon, int* hp)
 			continue;
 		}
 
-		if (pokemon->monhp <= 0)
+		if (pokemon.monhp <= 0)
 		{
 			printf("전투에서 승리했다! \n");
 			return 0;
 		}
 
 		//상대 턴
-		printf("%s의 몸통박치기!\n", pokemon->name);
+		printf("%s의 몸통박치기!\n", pokemon.name);
 		*hp -= 30;
 		printf("체력이 30 줄었다! %d/100 \n\n", *hp);
 
@@ -320,68 +310,4 @@ int Battle(struct Pokemon*pokemon, int* hp)
 			return 1;
 		}
 	}
-}
-
-int main(void)
-{
-	while (1)
-	{
-		//플레이어 정보
-		int hp = 100;
-		int xp = 0;
-		int i = 0;
-		int win = 0, quit = 0;
-
-		while (1)
-		{
-			//포켓몬 정보
-			struct Pokemon pokemon[3] = {
-				{1,"파이리",100,"불",1},
-				{2,"꼬부기",100,"물",2},
-				{3,"이상해씨",100,"풀",3}
-			};
-
-			printf("세 포켓몬 중 누구와 싸울텐가?\n\n");
-			Charmander();
-			printf("\n\n\n1: %s      타입:%s \n\n", pokemon[0].name, pokemon[0].type);
-			Squirtle();
-			printf("\n\n\n2: %s      타입:%s \n\n", pokemon[1].name, pokemon[1].type);
-			Bulbasaur();
-			printf("\n\n\n3: %s      타입:%s \n\n", pokemon[2].name, pokemon[2].type);
-
-			scanf_s("%d", &i);
-			if (i != 1 && i != 2 && i != 3)
-				continue;
-			//int battle(int monster, int* name, int monhp, int type, int* hp)
-			win = Battle(&pokemon[i-1], &hp);
-			//승패에 따른 보상
-			if (win == 0) {
-				xp += 25;
-				printf("경험치를 획득했습니다!\n");
-				printf("%d/100\n\n", xp);
-			}
-			else if (win == 1)
-			{
-				printf("패배하였습니다.\n체력이 회복됩니다.\n\n");
-				hp = 100;
-				continue;
-			}
-
-			if (xp >= 100)
-			{
-				break;
-			}
-		}
-		printf("다시 플레이 하시겠습니까?\n");
-		printf("YES: 1    NO:Other Number \n\n");
-		scanf_s("%d", &quit);
-
-		if (quit != 1)
-		{
-			printf("이용해주셔서 감사합니다.\n");
-			break;
-		}
-	}
-	
-	return 0;
 }
