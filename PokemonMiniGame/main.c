@@ -218,43 +218,33 @@ void Bulbasaur(void)
 	}
 	SetColor(15, 0);
 }
-
+//구조체에 더 많은 정보
 struct Pokemon {
+	int monster;
 	char* name;
-	int hp;
+	int monhp;
 	char* type;
+	int typeNum;
 };
 
-int Battle(int monster, char* name, int monhp, int type, int* hp)
+int Battle(struct Pokemon*pokemon, int* hp)
 {
 	int skill = 0;
-	if (monster == 1)
+	if (pokemon->monster == 1)
 	{
 		Charmander();
 	}
-	else if (monster == 2)
+	else if (pokemon->monster == 2)
 	{
 		Squirtle();
 	}
-	else if (monster == 3)
+	else if (pokemon->monster == 3)
 	{
 		Bulbasaur();
 	}
-	printf("%s 가 승부를 걸어왔다. \n\n", name);
-	printf("%s \n", name);
-	printf("HP: %d  타입: ", monhp);
-	if (type == 1)
-	{
-		printf("불\n\n");
-	}
-	else if (type == 2)
-	{
-		printf("물\n\n");
-	}
-	else if (type == 3)
-	{
-		printf("풀\n\n");
-	}
+	printf("%s 가 승부를 걸어왔다. \n\n", pokemon->name);
+	printf("%s \n", pokemon->name);
+	printf("HP: %d  타입: %s \n\n", pokemon->monhp, pokemon->type);
 
 	while (1)
 	{
@@ -264,41 +254,41 @@ int Battle(int monster, char* name, int monhp, int type, int* hp)
 		if (i == 1)
 		{
 			printf("\n불꽃세례!!\n");
-			if (type == 3)
+			if (pokemon->typeNum == 3)
 			{
-				monhp -= 30 * 2;
+				pokemon->monhp -= 30 * 2;
 			}
 			else
 			{
-				monhp -= 30;
+				pokemon->monhp -= 30;
 			}
-			printf("%s의 체력이 %d로 줄었다! \n\n", name, monhp);
+			printf("%s의 체력이 %d로 줄었다! \n\n", pokemon->name, pokemon->monhp);
 		}
 		else if (i == 2)
 		{
 			printf("\n물대포!!\n");
-			if (type == 1)
+			if (pokemon->typeNum == 1)
 			{
-				monhp -= 30 * 2;
+				pokemon->monhp -= 30 * 2;
 			}
 			else
 			{
-				monhp -= 30;
+				pokemon->monhp -= 30;
 			}
-			printf("%s의 체력이 %d로 줄었다!\n\n", name, monhp);
+			printf("%s의 체력이 %d로 줄었다!\n\n", pokemon->name, pokemon->monhp);
 		}
 		else if (i == 3)
 		{
 			printf("\n덩굴채찍!!\n");
-			if (type == 2)
+			if (pokemon->typeNum == 2)
 			{
-				monhp -= 30 * 2;
+				pokemon->monhp -= 30 * 2;
 			}
 			else
 			{
-				monhp -= 30;
+				pokemon->monhp -= 30;
 			}
-			printf("%s의 체력이 %d으로 줄었다!\n\n", name, monhp);
+			printf("%s의 체력이 %d으로 줄었다!\n\n", pokemon->name, pokemon->monhp);
 		}
 		else if (i == 4)
 		{
@@ -313,14 +303,14 @@ int Battle(int monster, char* name, int monhp, int type, int* hp)
 			continue;
 		}
 
-		if (monhp <= 0)
+		if (pokemon->monhp <= 0)
 		{
 			printf("전투에서 승리했다! \n");
 			return 0;
 		}
 
 		//상대 턴
-		printf("%s의 몸통박치기!\n", name);
+		printf("%s의 몸통박치기!\n", pokemon->name);
 		*hp -= 30;
 		printf("체력이 30 줄었다! %d/100 \n\n", *hp);
 
@@ -334,49 +324,36 @@ int Battle(int monster, char* name, int monhp, int type, int* hp)
 
 int main(void)
 {
-
-	//포켓몬 정보
-	struct Pokemon pokemon1 = { "파이리", 100, "불" };
-	struct Pokemon pokemon2 = { "꼬부기", 100, "물" };
-	struct Pokemon pokemon3 = { "이상해씨",100,"풀" };
-
 	while (1)
 	{
 		//플레이어 정보
 		int hp = 100;
 		int xp = 0;
-		int monster = 0;
+		int i = 0;
 		int win = 0, quit = 0;
 
 		while (1)
 		{
+			//포켓몬 정보
+			struct Pokemon pokemon[3] = {
+				{1,"파이리",100,"불",1},
+				{2,"꼬부기",100,"물",2},
+				{3,"이상해씨",100,"풀",3}
+			};
+
 			printf("세 포켓몬 중 누구와 싸울텐가?\n\n");
 			Charmander();
-			printf("\n\n\n1: %s      타입:%s \n\n", pokemon1.name, pokemon1.type);
+			printf("\n\n\n1: %s      타입:%s \n\n", pokemon[0].name, pokemon[0].type);
 			Squirtle();
-			printf("\n\n\n2: %s      타입:%s \n\n", pokemon2.name, pokemon2.type);
+			printf("\n\n\n2: %s      타입:%s \n\n", pokemon[1].name, pokemon[1].type);
 			Bulbasaur();
-			printf("\n\n\n3: %s      타입:%s \n\n", pokemon3.name, pokemon3.type);
+			printf("\n\n\n3: %s      타입:%s \n\n", pokemon[2].name, pokemon[2].type);
 
-			scanf_s("%d", &monster);
-			//int battle(int monster, int* name, int monhp, int type, int* hp)
-			if (monster == 1)
-			{
-				win = Battle(1, pokemon1.name, 100, 1, &hp);
-			}
-			else if (monster == 2)
-			{
-				win = Battle(2, pokemon2.name, 100, 2, &hp);
-			}
-			else if (monster == 3)
-			{
-				win = Battle(3, pokemon3.name, 100, 3, &hp);
-			}
-			else
-			{
-				printf("\n존재하지 않는 선택지 입니다.\n");
+			scanf_s("%d", &i);
+			if (i != 1 && i != 2 && i != 3)
 				continue;
-			}
+			//int battle(int monster, int* name, int monhp, int type, int* hp)
+			win = Battle(&pokemon[i-1], &hp);
 			//승패에 따른 보상
 			if (win == 0) {
 				xp += 25;
