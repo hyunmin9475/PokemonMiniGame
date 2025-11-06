@@ -12,7 +12,7 @@
 static void SetColor(int color, int back);
 
 //도트 출력 함수 선언
-void DotPrintPokemon(struct Pokemon pokemon);
+void DotPrintPokemon(struct Pokemon pokemon, int clsNum);
 
 //배틀 함수 선언
 int Battle(struct Pokemon pokemon, int* hp);
@@ -104,12 +104,19 @@ int main(void)
 		while (1)
 		{
 			printf("세 포켓몬 중 누구와 싸울텐가?\n\n"); //////////선택지 제시, 야생 몬스터 도트 출력과 정보 표시
-			DotPrintPokemon(pokemon[0]);
-			printf("\n\n\n1: %s      타입:%s \n\n", pokemon[0].name, pokemon[0].type);
-			DotPrintPokemon(pokemon[1]);
-			printf("\n\n\n2: %s      타입:%s \n\n", pokemon[1].name, pokemon[1].type);
-			DotPrintPokemon(pokemon[2]);
-			printf("\n\n\n3: %s      타입:%s \n\n", pokemon[2].name, pokemon[2].type);
+			Sleep(1500);
+
+			DotPrintPokemon(pokemon[0],1);
+			printf("\n\n1: %s      타입:%s \n\n\n", pokemon[0].name, pokemon[0].type);
+			Sleep(1000);
+
+			DotPrintPokemon(pokemon[1],1);
+			printf("\n\n2: %s      타입:%s \n\n\n", pokemon[1].name, pokemon[1].type);
+			Sleep(1000);
+
+			DotPrintPokemon(pokemon[2],1);
+			printf("\n\n3: %s      타입:%s \n\n\n", pokemon[2].name, pokemon[2].type);
+			Sleep(1000);
 
 			//////////////야생 포켓몬 선택
 			scanf_s("%d", &pokeNum);
@@ -124,22 +131,28 @@ int main(void)
 				xp += 25;
 				printf("경험치를 획득했습니다!\n");
 				printf("%d/100\n\n", xp);
+				system("pause");
+				system("cls");
 			}
 			else if (win == 1)
 			{
 				printf("패배하였습니다.\n체력이 회복됩니다.\n\n");
 				hp = 100;
+				system("pause");
+				system("cls");
 				continue;
 			}
 			/////////////////////////경험치 다 채우면 나가기
 			if (xp >= 100)
 			{
+				system("cls");
 				break;
 			}
 		}
 		printf("다시 플레이 하시겠습니까?\n");  /////////////////다시하기 기능
 		printf("YES: 1    NO:Other Number \n\n");
 		scanf_s("%d", &quit);
+		system("cls");
 
 		if (quit != 1)
 		{
@@ -162,8 +175,11 @@ static void SetColor(int color, int back)
 }
 
 /////////////////도트 출력 함수
-void DotPrintPokemon(struct Pokemon pokemon)
+void DotPrintPokemon(struct Pokemon pokemon,int clsNum)
 {
+	if (clsNum == 0)
+		system("cls");
+
 	for (int i = 0; i < 22; i++)
 	{
 		for (int j = 0; j < 22; j++)
@@ -231,7 +247,7 @@ void DotPrintPokemon(struct Pokemon pokemon)
 int Battle(struct Pokemon pokemon, int* hp)
 {
 	int skill = 0;
-	DotPrintPokemon(pokemon);
+	DotPrintPokemon(pokemon, 0);
 	printf("%s 가 승부를 걸어왔다. \n\n", pokemon.name);
 	printf("%s \n", pokemon.name);
 	printf("HP: %d  타입: %s \n\n", pokemon.monhp, pokemon.type);
@@ -239,8 +255,10 @@ int Battle(struct Pokemon pokemon, int* hp)
 	while (1)
 	{
 		int i = 0;
+		DotPrintPokemon(pokemon, 0);
 		printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 		scanf_s("%d", &i);
+		DotPrintPokemon(pokemon, 0);
 		if (i == 1)
 		{
 			printf("\n불꽃세례!!\n");
@@ -292,20 +310,25 @@ int Battle(struct Pokemon pokemon, int* hp)
 			printf("존재하지 않는 선택지입니다. \n\n");
 			continue;
 		}
+		system("pause");
 
 		if (pokemon.monhp <= 0)
 		{
+			system("cls");
 			printf("전투에서 승리했다! \n");
 			return 0;
 		}
 
 		//상대 턴
+		DotPrintPokemon(pokemon, 0);
 		printf("%s의 몸통박치기!\n", pokemon.name);
 		*hp -= 30;
 		printf("체력이 30 줄었다! %d/100 \n\n", *hp);
+		system("pause");
 
 		if (*hp <= 0)
 		{
+			system("cls");
 			printf("눈 앞이 하얘졌다!\n\n");
 			return 1;
 		}
