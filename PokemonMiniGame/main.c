@@ -4,18 +4,6 @@
 #include<time.h>
 #include<windows.h>
 
-////////////////
-////함수////////
-///////////////
-
-//도트 색 변경 함수 선언
-static void SetColor(int color, int back);
-
-//도트 출력 함수 선언
-void DotPrintPokemon(struct Pokemon pokemon, int clsNum);
-
-//배틀 함수 선언
-int Battle(struct Pokemon pokemon, int* hp);
 
 ////////////////////구조체///////////////////////////
 struct Pokemon {
@@ -26,17 +14,7 @@ struct Pokemon {
 	int typeNum;  //타입 고유 번호
 	int DotPokemon[22][22]; //도트 배열
 };
-////////////////메인 함수////////////////////
-int main(void)
-{
-	while (1)
-	{
-		////////////
-		//초기화////
-		///////////
-		
-		////////////////포켓몬 초기화   몬스터 번호, 이름, 체력, 타입, 타입 번호, 도트
-		struct Pokemon pokemon[3] = {
+struct Pokemon pokemon[3] = {
 			{1,"파이리",100,"불",1,{{15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,15,15,15,15},
 		{15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,0,6,0,15,15,15},
 		{15,15,15,0,0,13,13,6,0,15,15,15,15,15,15,15,0,6,6,0,15,15},
@@ -92,7 +70,108 @@ int main(void)
 		{15,15,15,15,0,0,0,0,0,0,2,2,2,2,8,0,0,15,15,15},
 		{15,15,15,15,15,15,15,15,15,0,15,2,15,8,0,15,15,15,15,15},
 		{15,15,15,15,15,15,15,15,15,15,0,0,0,0,15,15,15,15,15,15}}}  //여기까지 이상해씨
-		};
+};
+
+struct BackGr {
+	int Grass[50][50]; //풀숲 배경
+}BackGr;
+
+////////////////
+////함수////////
+///////////////
+
+//도트 색 변경 함수 선언
+static void SetColor(int color, int back);
+
+//도트 출력 함수 선언
+void DotPrintPokemon(struct Pokemon pokemon, int clsNum, int a, int b, int i);
+
+//배경 출력 함수 선언
+void DotPrintBG(struct BackGr BackGr, int clsNum, struct Pokemon pokemon, int MonNum);
+
+//배틀 함수 선언
+int Battle(struct Pokemon pokemon, int* hp, int MonNum);
+
+//콘솔 화면 크기
+static int SetConsoleSizeStable(short cols, short lines, short scrollLine);
+
+
+////////////////메인 함수////////////////////
+int main(void)
+{
+	SetConsoleSizeStable(100, 50, 200);
+	while (1)
+	{
+		////////////
+		///초기화///
+		///////////
+
+		////////////////포켓몬 초기화   몬스터 번호, 이름, 체력, 타입, 타입 번호, 도트
+		/*struct Pokemon pokemon[3] = {
+			{1,"파이리",100,"불",1,{{15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,0,15,15,15,15},
+		{15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,0,6,0,15,15,15},
+		{15,15,15,0,0,13,13,6,0,15,15,15,15,15,15,15,0,6,6,0,15,15},
+		{15,15,0,13,13,13,13,13,6,0,15,15,15,15,15,15,0,6,6,0,15,15},
+		{15,15,0,13,13,13,13,13,13,0,15,15,15,15,15,0,6,6,13,6,0,15},
+		{15,0,13,13,13,13,6,13,13,6,0,15,15,15,15,0,6,13,14,6,0,15},
+		{15,0,13,13,13,6,15,0,13,13,0,15,15,15,15,0,6,14,14,6,0,15},
+		{0,13,13,13,13,4,9,0,13,6,0,15,15,15,15,15,0,14,6,0,15,15},
+		{0,13,13,13,13,13,0,0,6,6,0,15,15,15,15,15,0,6,0,15,15,15},
+		{15,0,6,13,13,13,6,6,6,6,6,0,15,15,15,15,0,13,0,15,15,15},
+		{15,15,0,0,6,6,6,6,6,6,6,0,15,15,15,0,13,13,0,15,15,15},
+		{15,15,15,15,0,0,2,6,6,8,6,6,0,15,0,6,13,0,15,15,15,15},
+		{15,15,15,15,15,0,14,14,8,4,13,6,6,0,6,6,6,0,15,15,15,15},
+		{15,15,15,15,15,0,14,14,8,13,6,8,6,6,8,6,0,15,15,15,15,15},
+		{15,15,15,15,0,4,4,14,14,8,8,6,6,6,8,0,15,15,15,15,15,15},
+		{15,15,15,15,0,2,4,8,2,2,6,6,6,4,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,0,0,0,0,8,4,6,4,0,15,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,15,4,15,0,15,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15,15}}},//여기까지 파이리
+			{2,"꼬부기",100,"물",2,{{15,15,15,0,0,0,0,15,15,15,15,15,15,15,15,15,0,0,0,15,15},
+		{15,15,0,3,9,9,9,0,0,15,15,15,15,15,15,0,9,9,9,0,15},
+		{15,0,9,9,9,9,9,9,3,0,0,15,15,15,0,9,9,9,3,3,0},
+		{15,0,9,9,9,9,9,9,9,8,2,0,0,15,0,9,9,3,8,3,0},
+		{0,9,9,9,9,3,9,9,9,3,8,10,2,0,3,9,3,8,3,3,0},
+		{0,9,9,9,3,15,0,9,9,3,8,2,10,2,8,3,3,8,3,0,15},
+		{0,9,9,9,3,0,0,9,3,3,8,15,2,10,8,3,3,8,0,15,15},
+		{15,0,9,9,9,0,10,3,3,8,15,15,2,10,2,8,3,0,15,15,15},
+		{15,15,0,8,3,3,3,3,8,3,8,15,15,2,10,8,3,0,15,15,15},
+		{15,15,0,3,8,8,8,10,14,8,9,8,15,2,2,8,0,15,15,15,15},
+		{15,15,15,0,0,14,14,14,8,9,9,9,8,2,10,0,15,15,15,15,15},
+		{15,15,15,15,15,0,10,10,8,9,9,3,8,2,10,0,15,15,15,15,15},
+		{15,15,15,15,0,3,8,14,14,8,3,8,8,15,0,15,15,15,15,15,15},
+		{15,15,15,15,0,3,3,0,10,10,8,8,3,8,0,15,15,15,15,15,15},
+		{15,15,15,15,15,0,0,15,0,8,9,3,3,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,3,3,3,0,15,15,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,15,15,15,15,15,15,15,15}}}, //여기까지 꼬부기
+			{3,"이상해씨",100,"풀",3,{{15,15,15,15,15,15,15,15,15,15,15,15,0,15,0,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,15,0,10,0,10,0,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,2,10,2,0,15,15,15,15},
+		{15,15,15,15,15,15,15,15,0,0,2,9,9,2,9,2,0,0,15,15},
+		{15,15,15,15,15,15,15,0,2,2,9,2,9,2,9,2,2,9,0,15},
+		{15,15,15,0,15,15,0,9,2,9,2,2,9,2,2,9,2,2,9,0},
+		{15,15,0,10,0,0,8,9,9,9,2,9,2,2,2,2,9,2,9,0},
+		{15,15,0,10,10,10,2,8,8,9,9,9,2,2,2,2,9,9,9,0},
+		{15,15,0,10,10,2,9,9,2,8,9,9,9,9,9,9,9,9,9,0},
+		{15,0,10,10,10,9,9,9,10,2,8,8,8,9,9,9,9,9,0,15},
+		{15,0,2,10,10,10,10,10,10,10,10,10,8,9,9,9,8,0,15,15},
+		{0,4,9,10,10,10,2,10,10,10,10,8,2,8,8,8,2,0,15,15},
+		{0,10,10,10,10,9,10,8,0,8,10,2,2,2,2,2,9,9,0,15},
+		{15,0,10,10,10,10,0,0,15,15,2,2,2,8,2,2,9,9,0,15},
+		{15,0,2,10,10,10,0,4,15,2,2,2,9,9,8,2,2,2,0,15},
+		{15,15,0,0,2,2,2,2,2,2,8,2,9,9,8,2,15,0,15,15},
+		{15,15,15,15,0,0,0,0,0,0,2,2,2,2,8,0,0,15,15,15},
+		{15,15,15,15,15,15,15,15,15,0,15,2,15,8,0,15,15,15,15,15},
+		{15,15,15,15,15,15,15,15,15,15,0,0,0,0,15,15,15,15,15,15}}}  //여기까지 이상해씨
+		};*/
+		//////////////// 배경 초기화
+		for (int i = 0; i < 50; i++)
+		{
+			for (int j = 0; j < 50; j++)
+			{
+				BackGr.Grass[i][j] = 10;
+			}
+		}
 
 		//////////////////////////////////플레이어 초기화
 		int hp = 100;   //플레이어 체력
@@ -106,25 +185,28 @@ int main(void)
 			printf("세 포켓몬 중 누구와 싸울텐가?\n\n"); //////////선택지 제시, 야생 몬스터 도트 출력과 정보 표시
 			Sleep(1500);
 
-			DotPrintPokemon(pokemon[0],1);
+			DotPrintPokemon(pokemon[0], 1,22,22,0);
 			printf("\n\n1: %s      타입:%s \n\n\n", pokemon[0].name, pokemon[0].type);
 			Sleep(1000);
 
-			DotPrintPokemon(pokemon[1],1);
+			DotPrintPokemon(pokemon[1], 1,22,22,0);
 			printf("\n\n2: %s      타입:%s \n\n\n", pokemon[1].name, pokemon[1].type);
 			Sleep(1000);
 
-			DotPrintPokemon(pokemon[2],1);
+			DotPrintPokemon(pokemon[2], 1,22,22,0);
 			printf("\n\n3: %s      타입:%s \n\n\n", pokemon[2].name, pokemon[2].type);
 			Sleep(1000);
 
 			//////////////야생 포켓몬 선택
-			scanf_s("%d", &pokeNum);
-			if (pokeNum != 1 && pokeNum != 2 && pokeNum != 3)
+			pokeNum = _getch();
+			if (pokeNum != 49 && pokeNum != 50 && pokeNum != 51)
+			{
+				system("cls");
 				continue;   /////선택지 외의 숫자 선택 시 다시 선택
+			}
 
 			//int battle(struct Pokemon pokemon, int* hp);
-			win = Battle(pokemon[pokeNum-1], &hp); //////////////////배틀함수 호출
+			win = Battle(pokemon[pokeNum - 49], &hp, pokeNum -49); //////////////////배틀함수 호출
 
 			///////////////////////////////승패에 따른 보상
 			if (win == 0) {
@@ -151,16 +233,16 @@ int main(void)
 		}
 		printf("다시 플레이 하시겠습니까?\n");  /////////////////다시하기 기능
 		printf("YES: 1    NO:Other Number \n\n");
-		scanf_s("%d", &quit);
+		quit = _getch();
 		system("cls");
 
-		if (quit != 1)
+		if (quit != 49)
 		{
 			printf("이용해주셔서 감사합니다.\n");
 			break;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -175,14 +257,14 @@ static void SetColor(int color, int back)
 }
 
 /////////////////도트 출력 함수
-void DotPrintPokemon(struct Pokemon pokemon,int clsNum)
+void DotPrintPokemon(struct Pokemon pokemon, int clsNum, int a, int b, int i)
 {
 	if (clsNum == 0)
 		system("cls");
-
-	for (int i = 0; i < 22; i++)
+	
+	for (; i < a; i++)
 	{
-		for (int j = 0; j < 22; j++)
+		for (int j=0; j < b; j++)
 		{
 			if (pokemon.DotPokemon[i][j] == 15)
 			{
@@ -243,11 +325,89 @@ void DotPrintPokemon(struct Pokemon pokemon,int clsNum)
 	SetColor(15, 0);
 }
 
+//////배경 출력 함수
+void DotPrintBG(struct BackGr BackGr, int clsNum, struct Pokemon pokemon, int MonNum)
+{
+	int a = 0, b = 22, i2=0;
+	if (clsNum == 0)
+		system("cls");
+
+	for (int i = 0; i < 50; i++)
+	{
+		for (int j = 0; j < 50; j++)
+		{
+			if (i2 == 2 && j == 15)
+			{
+				DotPrintPokemon(pokemon[MonNum], 1, a + 1, b, a);
+				a++;
+			}
+
+
+			if (BackGr.Grass[i][j] == 15)
+			{
+				SetColor(15, 15);
+			}
+			else if (BackGr.Grass[i][j] == 0)
+			{
+				SetColor(0, 0);
+			}
+			else if (BackGr.Grass[i][j] == 13)
+			{
+				SetColor(13, 13);
+			}
+			else if (BackGr.Grass[i][j] == 6)
+			{
+				SetColor(6, 6);
+			}
+			else if (BackGr.Grass[i][j] == 4)
+			{
+				SetColor(4, 4);
+			}
+			else if (BackGr.Grass[i][j] == 14)
+			{
+				SetColor(14, 14);
+			}
+			else if (BackGr.Grass[i][j] == 12)
+			{
+				SetColor(12, 12);
+			}
+			else if (BackGr.Grass[i][j] == 8)
+			{
+				SetColor(8, 8);
+			}
+			else if (BackGr.Grass[i][j] == 10)
+			{
+				SetColor(10, 10);
+			}
+			else if (BackGr.Grass[i][j] == 9)
+			{
+				SetColor(9, 9);
+			}
+			else if (BackGr.Grass[i][j] == 2)
+			{
+				SetColor(2, 2);
+			}
+			else if (BackGr.Grass[i][j] == 3)
+			{
+				SetColor(3, 3);
+			}
+			else if (BackGr.Grass[i][j] == 10)
+			{
+				SetColor(10, 10);
+			}
+			printf("  ");
+		}
+		printf("\n");
+		i2--;
+	}
+	SetColor(15, 0);
+}
+
 ///////////////// 배틀함수
-int Battle(struct Pokemon pokemon, int* hp)
+int Battle(struct Pokemon pokemon, int* hp, int MonNum)
 {
 	int skill = 0;
-	DotPrintPokemon(pokemon, 0);
+	DotPrintBG(BackGr, 0, pokemon, MonNum);
 	printf("%s 가 승부를 걸어왔다. \n\n", pokemon.name);
 	printf("%s \n", pokemon.name);
 	printf("HP: %d  타입: %s \n\n", pokemon.monhp, pokemon.type);
@@ -255,11 +415,11 @@ int Battle(struct Pokemon pokemon, int* hp)
 	while (1)
 	{
 		int i = 0;
-		DotPrintPokemon(pokemon, 0);
+		DotPrintBG(BackGr, 0, pokemon, MonNum);
 		printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
-		scanf_s("%d", &i);
-		DotPrintPokemon(pokemon, 0);
-		if (i == 1)
+		i = _getch();
+		DotPrintBG(BackGr, 0, pokemon, MonNum);
+		if (i == 49)
 		{
 			printf("\n불꽃세례!!\n");
 			if (pokemon.typeNum == 3)
@@ -272,7 +432,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 			}
 			printf("%s의 체력이 %d로 줄었다! \n\n", pokemon.name, pokemon.monhp);
 		}
-		else if (i == 2)
+		else if (i == 50)
 		{
 			printf("\n물대포!!\n");
 			if (pokemon.typeNum == 1)
@@ -285,7 +445,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 			}
 			printf("%s의 체력이 %d로 줄었다!\n\n", pokemon.name, pokemon.monhp);
 		}
-		else if (i == 3)
+		else if (i == 51)
 		{
 			printf("\n덩굴채찍!!\n");
 			if (pokemon.typeNum == 2)
@@ -298,7 +458,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 			}
 			printf("%s의 체력이 %d으로 줄었다!\n\n", pokemon.name, pokemon.monhp);
 		}
-		else if (i == 4)
+		else if (i == 52)
 		{
 			printf("체력을 회복했다!\n");
 			*hp += 50;
@@ -320,7 +480,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 		}
 
 		//상대 턴
-		DotPrintPokemon(pokemon, 0);
+		DotPrintBG(BackGr, 0, pokemon, MonNum);
 		printf("%s의 몸통박치기!\n", pokemon.name);
 		*hp -= 30;
 		printf("체력이 30 줄었다! %d/100 \n\n", *hp);
@@ -333,4 +493,27 @@ int Battle(struct Pokemon pokemon, int* hp)
 			return 1;
 		}
 	}
+}
+static int SetConsoleSizeStable(short cols, short lines, short scrollLine)
+{
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hOut == INVALID_HANDLE_VALUE) return 0;
+
+	if (scrollLine < lines) scrollLine = lines;
+
+
+	COORD maxWin = GetLargestConsoleWindowSize(hOut);
+	if (maxWin.X > 0 && cols > maxWin.X) cols = maxWin.X;
+	if (maxWin.Y > 0 && lines > maxWin.Y) lines = maxWin.Y;
+
+	SMALL_RECT tiny = { 0, 0, 0, 0 };
+	if (!SetConsoleWindowInfo(hOut, TRUE, &tiny)) return 0;
+
+	COORD buf = { cols,scrollLine };
+	if (!SetConsoleScreenBufferSize(hOut, buf)) return 0;
+
+	SMALL_RECT win = { 0, 0, (short)(cols - 1),(short)(lines - 1) };
+	if (!SetConsoleWindowInfo(hOut, TRUE, &win)) return 0;
+
+	return 1;
 }
