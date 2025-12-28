@@ -4,8 +4,16 @@
 #include<time.h>
 #include<windows.h>
 
+///////////////////////////////  상수파트
+#define PokemonDot_Garo 19
+#define PokemonDot_Sero 22
+#define BattleField_Garo 50
+#define BattleField_Sero 50
+#define BackGr_Garo 50
+#define BackGr_Sero 50
+
 //빈 배경 초기화
-int BattleField[50][50] = {
+int BattleField[BattleField_Garo][BattleField_Sero] = {
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98},
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98},
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98},
@@ -66,25 +74,25 @@ struct Pokemon {
 	int monhp;    //포켓몬의 체력
 	char* type;   //포켓몬의 타입
 	int typeNum;  //타입 고유 번호
-	int DotPokemon[19][22]; //도트 배열
+	int DotPokemon[PokemonDot_Garo][PokemonDot_Sero]; //도트 배열
 };
 
 /////////// 포켓몬 구조체 초기화
 struct Pokemon pokemon[3] = {
 			{1,"파이리",100,"불",1,{{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,0,99,99,99,99},
 		{99,99,99,99,99,0,0,0,99,99,99,99,99,99,99,99,0,6,0,99,99,99},
-		{99,99,99,0,0,13,13,6,0,99,99,99,99,99,99,99,0,6,6,0,99,99},
-		{99,99,0,13,13,13,13,13,6,0,99,99,99,99,99,99,0,6,6,0,99,99},
-		{99,99,0,13,13,13,13,13,13,0,99,99,99,99,99,0,6,6,13,6,0,99},
-		{99,0,13,13,13,13,6,13,13,6,0,99,99,99,99,0,6,13,14,6,0,99},
-		{99,0,13,13,13,6,15,0,13,13,0,99,99,99,99,0,6,14,14,6,0,99},
-		{0,13,13,13,13,4,9,0,13,6,0,99,99,99,99,99,0,14,6,0,99,99},
-		{0,13,13,13,13,13,0,0,6,6,0,99,99,99,99,99,0,6,0,99,99,99},
-		{99,0,6,13,13,13,6,6,6,6,6,0,99,99,99,99,0,13,0,99,99,99},
-		{99,99,0,0,6,6,6,6,6,6,6,0,99,99,99,0,13,13,0,99,99,99},
-		{99,99,99,99,0,0,2,6,6,8,6,6,0,99,0,6,13,0,99,99,99,99},
-		{99,99,99,99,99,0,14,14,8,4,13,6,6,0,6,6,6,0,99,99,99,99},
-		{99,99,99,99,99,0,14,14,8,13,6,8,6,6,8,6,0,99,99,99,99,99},
+		{99,99,99,0,0,12,12,6,0,99,99,99,99,99,99,99,0,6,6,0,99,99},
+		{99,99,0,12,12,12,12,12,6,0,99,99,99,99,99,99,0,6,6,0,99,99},
+		{99,99,0,12,12,12,12,12,12,0,99,99,99,99,99,0,6,6,12,6,0,99},
+		{99,0,12,12,12,12,6,12,12,6,0,99,99,99,99,0,6,12,14,6,0,99},
+		{99,0,12,12,12,6,15,0,12,12,0,99,99,99,99,0,6,14,14,6,0,99},
+		{0,12,12,12,12,4,9,0,12,6,0,99,99,99,99,99,0,14,6,0,99,99},
+		{0,12,12,12,12,12,0,0,6,6,0,99,99,99,99,99,0,6,0,99,99,99},
+		{99,0,6,12,12,12,6,6,6,6,6,0,99,99,99,99,0,12,0,99,99,99},
+		{99,99,0,0,6,6,6,6,6,6,6,0,99,99,99,0,12,12,0,99,99,99},
+		{99,99,99,99,0,0,2,6,6,8,6,6,0,99,0,6,12,0,99,99,99,99},
+		{99,99,99,99,99,0,14,14,8,4,12,6,6,0,6,6,6,0,99,99,99,99},
+		{99,99,99,99,99,0,14,14,8,12,6,8,6,6,8,6,0,99,99,99,99,99},
 		{99,99,99,99,0,4,4,14,14,8,8,6,6,6,8,0,99,99,99,99,99,99},
 		{99,99,99,99,0,2,4,8,2,2,6,6,6,4,0,99,99,99,99,99,99,99},
 		{99,99,99,99,99,0,0,0,0,8,4,6,4,0,99,99,99,99,99,99,99,99},
@@ -131,7 +139,7 @@ struct Pokemon pokemon[3] = {
 };
 
 struct BackGr {
-	int Grass[50][50]; //풀숲 배경
+	int Grass[BackGr_Garo][BackGr_Sero]; //풀숲 배경
 }BackGr;
 
 ////////////////
@@ -154,10 +162,10 @@ int Battle(struct Pokemon pokemon, int* hp);
 int SetConsoleSizeStable(short cols, short lines, short scrollLine);
 
 //빈 배경에 포켓몬 입히기
-void DotPrintPokemon(struct Pokemon pokemon, int StartX, int StartY);
+void DotSetPokemon(struct Pokemon pokemon, int StartX, int StartY);
 
 //빈 배경에 배경 입히기
-void DotPrintBG(struct BackGr BackGr);
+void DotSetBG(struct BackGr BackGr);
 
 
 ////////////////메인 함수////////////////////
@@ -189,27 +197,27 @@ int main(void)
 			printf("세 포켓몬 중 누구와 싸울텐가?\n\n"); //////////선택지 제시, 야생 몬스터 도트 출력과 정보 표시
 			Sleep(1500);
 
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
 			printf("\n\n1: %s      타입:%s \n\n\n", pokemon[0].name, pokemon[0].type);
 			Sleep(1000);
 
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[1], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
 			printf("\n\n2: %s      타입:%s \n\n\n", pokemon[1].name, pokemon[1].type);
 			Sleep(1000);
 
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[2], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[2], 2, 15);
 			DotPrintScreen();
 			printf("\n\n3: %s      타입:%s \n\n\n", pokemon[2].name, pokemon[2].type);
 			Sleep(1000);
 
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 2);
-			DotPrintPokemon(pokemon[1], 2, 28);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			printf("\n\n4: %s      타입:%s      %s       타입:%s \n\n\n", pokemon[0].name, pokemon[0].type, pokemon[1].name, pokemon[1].type);
 			Sleep(1000);
@@ -346,8 +354,8 @@ void DotPrintScreen()
 ///////////////// 배틀함수
 int Battle(struct Pokemon pokemon, int* hp)
 {
-	DotPrintBG(BackGr);
-	DotPrintPokemon(pokemon, 2, 15);
+	DotSetBG(BackGr);
+	DotSetPokemon(pokemon, 2, 15);
 	DotPrintScreen();
 	printf("%s 가 승부를 걸어왔다. \n\n", pokemon.name);
 	printf("%s \n", pokemon.name);
@@ -357,13 +365,13 @@ int Battle(struct Pokemon pokemon, int* hp)
 	while (1)
 	{
 		int Pskill = 0;
-		DotPrintBG(BackGr);
-		DotPrintPokemon(pokemon, 2, 15);
+		DotSetBG(BackGr);
+		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
 		printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 		Pskill = _getch();
-		DotPrintBG(BackGr);
-		DotPrintPokemon(pokemon, 2, 15);
+		DotSetBG(BackGr);
+		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
 		if (Pskill == 49)
 		{
@@ -426,8 +434,8 @@ int Battle(struct Pokemon pokemon, int* hp)
 		}
 
 		//상대 턴
-		DotPrintBG(BackGr);
-		DotPrintPokemon(pokemon, 2, 15);
+		DotSetBG(BackGr);
+		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
 		printf("%s의 몸통박치기!\n", pokemon.name);
 		*hp -= 30;
@@ -446,9 +454,9 @@ int Battle(struct Pokemon pokemon, int* hp)
 ////////////////////더블 배틀 함수
 int DoubleBattle(struct Pokemon* pokemon, int* hp)
 {
-	DotPrintBG(BackGr);
-	DotPrintPokemon(pokemon[0], 2, 2);
-	DotPrintPokemon(pokemon[1], 2, 28);
+	DotSetBG(BackGr);
+	DotSetPokemon(pokemon[0], 2, 2);
+	DotSetPokemon(pokemon[1], 2, 28);
 	DotPrintScreen();
 	printf("%s와 %s 가 승부를 걸어왔다. \n\n", pokemon[0].name, pokemon[1].name);
 	printf("%s            %s \n", pokemon[0].name, pokemon[1].name);
@@ -463,9 +471,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		int choice2 = 0; //2번 대상 지정
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0) //////////////////////////////////////파이리 꼬부기 모두 살아있을 때
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 2);
-			DotPrintPokemon(pokemon[1], 2, 28);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 			Fskill = _getch();  ///////////////////////1번 스킬 선택
@@ -477,9 +485,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 			}
 			else if (Fskill == 49 || Fskill == 50 || Fskill == 51)
 			{
-				DotPrintBG(BackGr);
-				DotPrintPokemon(pokemon[0], 2, 2);
-				DotPrintPokemon(pokemon[1], 2, 28);
+				DotSetBG(BackGr);
+				DotSetPokemon(pokemon[0], 2, 2);
+				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
 				printf("누구에게 사용할까? \n");
 				printf("1. %s       2. %s\n", pokemon[0].name, pokemon[1].name);
@@ -492,9 +500,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				}
 			}
 
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 2);
-			DotPrintPokemon(pokemon[1], 2, 28);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 			Sskill = _getch(); ////////////////////2번 스킬 선택
@@ -506,9 +514,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 			}
 			else if (Sskill == 49 || Sskill == 50 || Sskill == 51)
 			{
-				DotPrintBG(BackGr);
-				DotPrintPokemon(pokemon[0], 2, 2);
-				DotPrintPokemon(pokemon[1], 2, 28);
+				DotSetBG(BackGr);
+				DotSetPokemon(pokemon[0], 2, 2);
+				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
 				printf("누구에게 사용할까? \n");
 				printf("1. %s       2. %s\n", pokemon[0].name, pokemon[1].name);
@@ -642,8 +650,8 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		}
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ////////////////////////////////////////////////////// 파이리만 생존
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
 			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 			Fskill = _getch();
@@ -683,8 +691,8 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		}
 		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0) /////////////////////////////////////////////// 꼬부기만 생존
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[1], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
 			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
 			Fskill = _getch();
@@ -725,9 +733,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		/////////////////////////////////////////////////////////////////////////////////////////// 상대 포켓몬 공격턴
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0)////////////////////////////////////////////////////////////////////////////둘 다 생존 시 상대 공격
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 2);
-			DotPrintPokemon(pokemon[1], 2, 28); ///////////////////////////////////////// 둘 다 생존 시) 파이리 공격턴
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28); ///////////////////////////////////////// 둘 다 생존 시) 파이리 공격턴
 			DotPrintScreen();
 			printf("%s의 몸통박치기!\n", pokemon[0].name);
 			*hp -= 20;
@@ -740,9 +748,9 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				printf("눈 앞이 하얘졌다!\n\n");
 				return 1;
 			}
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 2);
-			DotPrintPokemon(pokemon[1], 2, 28); ////////////////////////////////////////// 둘 다 생존 시) 꼬부기 공격턴
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28); ////////////////////////////////////////// 둘 다 생존 시) 꼬부기 공격턴
 			DotPrintScreen();
 			printf("%s의 몸통박치기!\n", pokemon[1].name);
 			*hp -= 20;
@@ -758,8 +766,8 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		}
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ///////////////////////////////////////////////////////////////////////////파이리만 생존 시 상대 공격턴
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[0], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
 			printf("%s의 몸통박치기!\n", pokemon[0].name);
 			*hp -= 20;
@@ -775,8 +783,8 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		}
 		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0)
 		{
-			DotPrintBG(BackGr);
-			DotPrintPokemon(pokemon[1], 2, 15);
+			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
 			printf("%s의 몸통박치기!\n", pokemon[1].name);
 			*hp -= 20;
@@ -817,34 +825,19 @@ static int SetConsoleSizeStable(short cols, short lines, short scrollLine)
 	return 1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////// 포켓몬 입히기 함수
-void DotPrintPokemon(struct Pokemon pokemon, int StartX, int StartY)
+void DotSetPokemon(struct Pokemon pokemon, int StartX, int StartY)
 {
-	for (int x = 0, i = 0; x < 50; x++)
+	for (int i = StartX; i < StartX + 19; i++)
 	{
-		if (x >= StartX && x < StartX + 19)
+		for (int j = StartY; j < StartY + 22; j++)
 		{
-			for (int y = 0, j = 0; y < 50; y++)
-			{
-				if (y >= StartY && y < StartY + 22)
-				{
-					if (pokemon.DotPokemon[i][j] == 99)
-					{
-						j++;
-						continue;
-					}
-					else
-					{
-						BattleField[x][y] = pokemon.DotPokemon[i][j];
-						j++;
-					}
-				}
-			}
-			i++;
+			if (pokemon.DotPokemon[i - StartX][j - StartY] == 99) continue;
+			else BattleField[i][j] = pokemon.DotPokemon[i - StartX][j - StartY];
 		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////////////////////// 배경 입히기
-void DotPrintBG(struct BackGr BackGr)
+void DotSetBG(struct BackGr BackGr)
 {
 	for (int i = 0; i < 50; i++)
 	{
