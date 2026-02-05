@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<windows.h>
-#include <string.h>
+#include<string.h>
 
 ///////////////////////////////  상수파트
 #define PokemonDot_Garo 19
@@ -15,6 +15,15 @@
 #define EncountEnemy 1
 #define Explain 2
 #define EnemyTurn 3
+#define Enemy1Turn 4
+#define Enemy2Turn 5
+#define PickEnemy 6
+#define Up 72
+#define Down 80
+#define Left 75
+#define Right 77
+#define TextZone_Garo 10
+#define TextZone_Sero 50
 
 //빈 배경 초기화
 int BattleField[BattleField_Garo][BattleField_Sero] = {
@@ -68,6 +77,20 @@ int BattleField[BattleField_Garo][BattleField_Sero] = {
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98},
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98},
 	{98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98}
+};
+
+//텍스트존 초기화
+int TextZone[TextZone_Garo][TextZone_Sero] = {
+	{77,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,80},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{79,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,79},
+	{81,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,78,82}
 };
 
 ////////////////////구조체///////////////////////////
@@ -201,10 +224,26 @@ void PrintExplaneText(char *Text, struct Pokemon pokemon, int Situation);
 //적 몬스터 선택창 출력 함수
 void PrintPickEnemyText(char* Enemy1, char* Enemy2, char* Enemy3, char* Enemy4);
 
+//설명창 텍스트 출력 함수
+void PrintExplaneTextDB(char* Text,  int Situation);
+
+//화살표 및 스킬 선택 함수
+int ChoiceSkill();
+
+//화살표 및 상대 몬스터 선택 함수
+int ChoiceMon();
+
+//화살표 및 더블배틀 스킬 타켓 선택 함수
+int ChoiceTarget();
+
+//커서 숨기기 함수
+void CursorView(char show);
+
 
 ////////////////메인 함수////////////////////
 int main(void)
 {
+	CursorView(0);
 	SetConsoleSizeStable(100, 50, 50); ////// 콘솔 창 설정
 	while (1)
 	{
@@ -258,20 +297,20 @@ int main(void)
 			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-			Sleep(1000);
+			system("pause");
 
 			//////////////야생 포켓몬 선택
-			pokeNum = _getch();
+			pokeNum = ChoiceMon();
 
-			if (pokeNum == 52)
+			if (pokeNum == 4)
 				win = DoubleBattle(pokemon, &hp);  //////////////////////////////////////////////더블 배틀 함수 호출
-			else if (pokeNum != 49 && pokeNum != 50 && pokeNum != 51 && pokeNum != 52)
+			else if (pokeNum != 1 && pokeNum != 2 && pokeNum != 3 && pokeNum != 4)
 			{
 				system("cls");
 				continue;   /////선택지 외의 숫자 선택 시 다시 선택
 			}
 			else
-				win = Battle(pokemon[pokeNum - 49], &hp); //////////////////배틀함수 호출
+				win = Battle(pokemon[pokeNum - 1], &hp); //////////////////배틀함수 호출
 
 			//int battle(struct Pokemon pokemon, int* hp);
 			//win = Battle(pokemon[pokeNum - 49], &hp); //////////////////배틀함수 호출
@@ -279,8 +318,9 @@ int main(void)
 			///////////////////////////////승패에 따른 보상
 			if (win == 0) {
 				xp += 25;
+				DotPrintScreen();
 				PrintExplaneText("경험치를 획득했습니다. ",pokemon[0], Explain);
-				printf("%d/100\n\n", xp);
+				printf("%d/100 \n", xp);
 				system("pause");
 				system("cls");
 			}
@@ -295,16 +335,21 @@ int main(void)
 			/////////////////////////경험치 다 채우면 나가기
 			if (xp >= 100)
 			{
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneText("목표를 달성했습니다. ", pokemon[0], Explain);
+				system("pause");
 				system("cls");
 				break;
 			}
 		}
 		printf("다시 플레이 하시겠습니까?\n");  /////////////////다시하기 기능
-		printf("YES: 1    NO:Other Number \n\n");
+		printf("YES: C    NO:Other Keys \n\n");
 		quit = _getch();
 		system("cls");
 
-		if (quit != 49)
+		if (quit != 99)
 		{
 			printf("이용해주셔서 감사합니다.\n");
 			break;
@@ -385,7 +430,40 @@ void DotPrintScreen()
 			{
 				SetColor(7, 7);
 			}
-			printf("  ");
+			else if (BattleField[i][j] == 78)
+			{
+				SetColor(0, 7);
+				printf("──");
+			}
+			else if (BattleField[i][j] == 79)
+			{
+				SetColor(0, 7);
+				printf("│ ");
+			}
+			else if (BattleField[i][j] == 77)
+			{
+				SetColor(0, 7);
+				printf("┌─");
+			}
+			else if (BattleField[i][j] == 80)
+			{
+				SetColor(0, 7);
+				printf("┐ ");
+			}
+			else if (BattleField[i][j] == 82)
+			{
+				SetColor(0, 7);
+				printf("┘ ");
+			}
+			else if (BattleField[i][j] == 81)
+			{
+				SetColor(0, 7);
+				printf("└─");
+			}
+			if (BattleField[i][j] != 78 && BattleField[i][j] != 79 && BattleField[i][j] != 80 && BattleField[i][j] != 81 && BattleField[i][j] != 82 && BattleField[i][j] != 77)
+			{
+				printf("  ");
+			}
 		}
 		printf("\n");
 	}
@@ -411,12 +489,13 @@ int Battle(struct Pokemon pokemon, int* hp)
 		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
 		PrintSkillText(Eevee[0]);
-		Pskill = _getch();
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
+		Pskill = ChoiceSkill();
 		DotSetBG(BackGr);
 		PrintTextZone();
 		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
-		if (Pskill == 49)
+		if (Pskill == 1)
 		{
 			PrintExplaneText("불꽃세례! ", pokemon, Explain);
 			Sleep(1000);
@@ -436,7 +515,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
 			}
 		}
-		else if (Pskill == 50)
+		else if (Pskill == 2)
 		{
 			PrintExplaneText("물대포! ", pokemon, Explain);
 			Sleep(1000);
@@ -456,7 +535,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
 			}
 		}
-		else if (Pskill == 51)
+		else if (Pskill == 3)
 		{
 			PrintExplaneText("덩굴채찍! ", pokemon, Explain);
 			Sleep(1000);
@@ -476,7 +555,7 @@ int Battle(struct Pokemon pokemon, int* hp)
 				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
 			}
 		}
-		else if (Pskill == 52)
+		else if (Pskill == 4)
 		{
 			PrintExplaneText("HP회복! ", pokemon, Explain);
 			Sleep(1000);
@@ -484,12 +563,8 @@ int Battle(struct Pokemon pokemon, int* hp)
 			if (*hp > 100)*hp = 100;
 			PrintExplaneText("체력을 회복했다. ", pokemon, Explain);
 		}
-		else
-		{
-			PrintExplaneText("존재하지 않는 선택지입니다. ", pokemon, Explain);
-			system("pause");
-			continue;
-		}
+		else continue;
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
 		system("pause");
 
 		if (pokemon.monhp <= 0)
@@ -510,11 +585,9 @@ int Battle(struct Pokemon pokemon, int* hp)
 		PrintExplaneText(" ", pokemon, EnemyTurn);
 		Sleep(1000);
 		*hp -= 30;
-		DotSetBG(BackGr);
-		PrintTextZone();
-		DotSetPokemon(pokemon, 2, 15);
 		DotPrintScreen();
 		PrintExplaneText("효과는 보통이었다. ", pokemon, Explain);
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
 		system("pause");
 
 		if (*hp <= 0)
@@ -535,10 +608,10 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 	DotSetBG(BackGr);
 	DotSetPokemon(pokemon[0], 2, 2);
 	DotSetPokemon(pokemon[1], 2, 28);
+	PrintTextZone();
 	DotPrintScreen();
-	printf("%s와 %s 가 승부를 걸어왔다. \n\n", pokemon[0].name, pokemon[1].name);
-	printf("%s            %s \n", pokemon[0].name, pokemon[1].name);
-	printf("HP: %d  타입: %s    HP: %d  타입: %s\n\n", pokemon[0].monhp, pokemon[0].type, pokemon[1].monhp, pokemon[1].type);
+	PrintExplaneTextDB("", EncountEnemy);
+	printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
 	Sleep(1000);
 
 	while (1)
@@ -550,333 +623,395 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0) //////////////////////////////////////파이리 꼬부기 모두 살아있을 때
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 2);
 			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			PrintSkillText(Eevee[0]);
-			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
-			Fskill = _getch();  ///////////////////////1번 스킬 선택
-
-			if (Fskill != 49 && Fskill != 50 && Fskill != 51 && Fskill != 52) ////////// 스킬 재선택
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			Fskill = ChoiceSkill();  ///////////////////////1번 스킬 선택
+			if (Fskill == 0) ////////// 스킬 재선택
 			{
-				printf("존재하지 않는 선택지 입니다. \n");
 				continue;
 			}
-			else if (Fskill == 49 || Fskill == 50 || Fskill == 51)
+			else if (Fskill == 1 || Fskill == 2 || Fskill == 3)
 			{
 				DotSetBG(BackGr);
+				PrintTextZone();
 				DotSetPokemon(pokemon[0], 2, 2);
 				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
-				printf("누구에게 사용할까? \n");
-				printf("1. %s       2. %s\n", pokemon[0].name, pokemon[1].name);
-				choice1 = _getch(); ///////////////////////////1번 스킬 대상 지정
+				PrintExplaneTextDB("", PickEnemy);
+				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+				choice1 = ChoiceTarget(); ///////////////////////////1번 스킬 대상 지정
 
-				if (choice1 != 49 && choice1 != 50) ////////////////////////////////////// 대상 재선택
+				if (choice1 == 0) ////////////////////////////////////// 대상 재선택
 				{
-					printf("존재하지 않는 선택지 입니다. \n");
 					continue;
 				}
 			}
 
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 2);
 			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
 			PrintSkillText(Eevee[0]);
-			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
-			Sskill = _getch(); ////////////////////2번 스킬 선택
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			Sskill = ChoiceSkill(); ////////////////////2번 스킬 선택
 
-			if (Sskill != 49 && Sskill != 50 && Sskill != 51 && Sskill != 52) ///////// 스킬 재선택
+			if (Sskill == 0) ///////// 스킬 재선택
 			{
-				printf("존재하지 않는 선택지 입니다. \n");
 				continue;
 			}
-			else if (Sskill == 49 || Sskill == 50 || Sskill == 51)
+			else if (Sskill == 1 || Sskill == 2 || Sskill == 3)
 			{
 				DotSetBG(BackGr);
+				PrintTextZone();
 				DotSetPokemon(pokemon[0], 2, 2);
 				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
-				printf("누구에게 사용할까? \n");
-				printf("1. %s       2. %s\n", pokemon[0].name, pokemon[1].name);
-				choice2 = _getch(); ///////////////////////////1번 스킬 대상 지정
+				PrintExplaneTextDB("", PickEnemy);
+				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+				choice2 = ChoiceTarget(); ///////////////////////////1번 스킬 대상 지정
 
-				if (choice2 != 49 && choice2 != 50) ////////////////////////////////////// 대상 재선택
+				if (choice2 == 0) ////////////////////////////////////// 대상 재선택
 				{
-					printf("존재하지 않는 선택지 입니다. \n");
 					continue;
 				}
 			}
-			if (Fskill == 49) { /////////////////////////////////////////////////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 1번 선택
-				printf("불꽃세례! \n");
-				if (choice1 == 49) {
-					pokemon[0].monhp -= 30;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					Sleep(1000);
-				}
-				else
-				{
-					pokemon[1].monhp -= 10;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					Sleep(1000);
-				}
-			}
-			else if (Fskill == 50) { /////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 2번 선택
-				printf("물대포! \n");
-				if (choice1 == 49) {
-					pokemon[0].monhp -= 30 * 2;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					Sleep(1000);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					Sleep(1000);
-				}
-			}
-			else if (Fskill == 51) { //////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 3번 선택
-				printf("덩굴채찍! \n");
-				if (choice1 == 49) {
-					pokemon[0].monhp -= 10;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					Sleep(1000);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30 * 2;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					Sleep(1000);
-				}
-			}
-			else if (Fskill == 52) { ////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 4번(회복) 선택
-				printf("체력을 회복했다!\n");
-				*hp += 50;
-				if (*hp > 100)*hp = 100;
-				printf("체력이 %d가 되었다.\n\n", *hp);
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[0], 2, 2);
+			DotSetPokemon(pokemon[1], 2, 28);
+			DotPrintScreen();
+			if (Fskill == 1) { /////////////////////////////////////////////////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 1번 선택
+				PrintExplaneTextDB ("불꽃세례! ", Explain);
 				Sleep(1000);
-			}
-
-			if (Sskill == 49) { /////////////////////////////////////////////////////////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 1번
-				printf("불꽃세례! \n");
-				if (choice2 == 49) {
+				if (choice1 == 1) {
 					pokemon[0].monhp -= 30;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					system("pause");
+					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
 				}
 				else
 				{
-					pokemon[1].monhp -= 10;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					system("pause");
+					pokemon[1].monhp -= 30 / 2;
+					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
 				}
 			}
-			else if (Sskill == 50) { ///////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 2번
-				printf("물대포! \n");
-				if (choice2 == 49) {
+			else if (Fskill == 2) { /////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 2번 선택
+				PrintExplaneTextDB ("물대포! ", Explain);
+				Sleep(1000);
+				if (choice1 == 1) {
 					pokemon[0].monhp -= 30 * 2;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					system("pause");
+					PrintExplaneTextDB ("효과가 굉장했다! ", Explain);
 				}
 				else
 				{
 					pokemon[1].monhp -= 30;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					system("pause");
+					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
 				}
 			}
-			else if (Sskill == 51) { ////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 3번
-				printf("덩굴채찍! \n");
-				if (choice2 == 49) {
-					pokemon[0].monhp -= 10;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-					system("pause");
+			else if (Fskill == 3) { //////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 3번 선택
+				PrintExplaneText("덩굴채찍! ", pokemon[0], Explain);
+				Sleep(1000);
+				if (choice1 == 1) {
+					pokemon[0].monhp -= 30 / 2;
+					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
 				}
 				else
 				{
 					pokemon[1].monhp -= 30 * 2;
-					printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-					system("pause");
+					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
 				}
 			}
-			else if (Sskill == 52) { //////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 4번
-				printf("체력을 회복했다!\n");
+			else if (Fskill == 4) { ////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 4번(회복) 선택
+				PrintExplaneTextDB ("HP회복! ", Explain);
 				*hp += 50;
 				if (*hp > 100)*hp = 100;
-				printf("체력이 %d가 되었다.\n\n", *hp);
-				system("pause");
+				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
 			}
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
+			DotPrintScreen();
+
+			if (Sskill == 1) { /////////////////////////////////////////////////////////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 1번
+				PrintExplaneTextDB("불꽃세례! ", Explain);
+				if (choice2 == 1) {
+					pokemon[0].monhp -= 30;
+					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
+				}
+				else
+				{
+					pokemon[1].monhp -= 30 / 2;
+					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
+				}
+			}
+			else if (Sskill == 2) { ///////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 2번
+				PrintExplaneTextDB("물대포! ", Explain);
+				Sleep(1000);
+				if (choice2 == 1) {
+					pokemon[0].monhp -= 30 * 2;
+					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
+				}
+				else
+				{
+					pokemon[1].monhp -= 30;
+					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
+				}
+			}
+			else if (Sskill == 3) { ////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 3번
+				PrintExplaneTextDB("덩굴채찍! ", Explain);
+				Sleep(1000);
+				if (choice2 == 1) {
+					pokemon[0].monhp -= 30 / 2;
+					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
+				}
+				else
+				{
+					pokemon[1].monhp -= 30 * 2;
+					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
+				}
+			}
+			else if (Sskill == 4) { //////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 4번
+				PrintExplaneTextDB ("HP회복! ", Explain);
+				Sleep(1000);
+				*hp += 50;
+				if (*hp > 100)*hp = 100;
+				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
+			}
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) ////////////// 클리어 시
 			{
-				system("cls");
-				printf("전투에서 승리했다! \n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				system("pause");
 				return 0;
 			}
 
 			if (pokemon[0].monhp <= 0) ////////// 파이리 사망
 			{
-				system("cls");
-				printf("%s는 쓰러졌다.\n", pokemon[0].name);
+				PrintExplaneTextDB ("파이리는 쓰러졌다. ", Explain);
 				system("pause");
 			}
 			else if (pokemon[1].monhp <= 0) ///////// 꼬부기 사망
 			{
-				system("cls");
-				printf("%s는 쓰러졌다.\n", pokemon[1].name);
+				PrintExplaneTextDB ("꼬부기는 쓰러졌다. ", Explain);
 				system("pause");
 			}
 		}
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ////////////////////////////////////////////////////// 파이리만 생존
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
 			PrintSkillText(Eevee[0]);
-			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
-			Fskill = _getch();
-			if (Fskill == 49)
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			Fskill = ChoiceSkill();
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[0], 2, 15);
+			DotPrintScreen();
+
+			if (Fskill == 1)
 			{
+				PrintExplaneTextDB ("불꽃세례! ", Explain);
+				Sleep(1000);
 				pokemon[0].monhp -= 30;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-				system("pause");
+				PrintExplaneTextDB ("효과는 평범했다. ", Explain);
 			}
-			else if (Fskill == 50)
+			else if (Fskill == 2)
 			{
+				PrintExplaneTextDB ("물대포! ", Explain);
+				Sleep(1000);
 				pokemon[0].monhp -= 30 * 2;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-				system("pause");
+				PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
 			}
-			else if (Fskill == 51)
+			else if (Fskill == 3)
 			{
-				pokemon[0].monhp -= 10;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[0].name, pokemon[0].monhp);
-				system("pause");
+				PrintExplaneTextDB ("덩굴채찍! ", Explain);
+				Sleep(1000);
+				pokemon[0].monhp -= 30 / 2;
+				PrintExplaneTextDB ("효과는 별로였다. ", Explain);
 			}
-			else if (Fskill == 52)
+			else if (Fskill == 4)
 			{
-				printf("체력을 회복했다!\n");
+				PrintExplaneTextDB ("HP회복! ", Explain);
+				Sleep(1000);
 				*hp += 50;
 				if (*hp > 100)*hp = 100;
-				printf("체력이 %d가 되었다.\n\n", *hp);
-				system("pause");
+				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
 			}
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) ///////////////// 클리어
 			{
-				system("cls");
-				printf("전투에서 승리했다! \n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				system("pause");
 				return 0;
 			}
 		}
 		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0) /////////////////////////////////////////////// 꼬부기만 생존
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
 			PrintSkillText(Eevee[0]);
-			printf("1: 불꽃세례  2: 물대포  3: 덩굴채찍 4: 상처약\n");
-			Fskill = _getch();
-			if (Fskill == 49)
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			Fskill = ChoiceSkill();
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[1], 2, 15);
+			DotPrintScreen();
+
+			if (Fskill == 1)
 			{
-				pokemon[1].monhp -= 10;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-				system("pause");
+				PrintExplaneTextDB ("불꽃세례! ", Explain);
+				Sleep(1000);
+				pokemon[1].monhp -= 30 / 2;
+				PrintExplaneTextDB ("효과는 별로였다. ", Explain);
 			}
-			else if (Fskill == 50)
+			else if (Fskill == 2)
 			{
+				PrintExplaneTextDB ("물대포! ", Explain);
+				Sleep(1000);
 				pokemon[1].monhp -= 30;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-				system("pause");
+				PrintExplaneTextDB ("효과는 평범했다. ", Explain);
 			}
-			else if (Fskill == 51)
+			else if (Fskill == 3)
 			{
+				PrintExplaneTextDB ("덩굴채찍! ", Explain);
+				Sleep(1000);
 				pokemon[1].monhp -= 30 * 2;
-				printf("%s의 체력이 %d로 줄었다! \n\n", pokemon[1].name, pokemon[1].monhp);
-				system("pause");
+				PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
 			}
-			else if (Fskill == 52)
+			else if (Fskill == 4)
 			{
-				printf("체력을 회복했다!\n");
+				PrintExplaneTextDB ("HP회복! ", Explain);
+				Sleep(1000);
 				*hp += 50;
 				if (*hp > 100)*hp = 100;
-				printf("체력이 %d가 되었다.\n\n", *hp);
-				system("pause");
+				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
 			}
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) //////// 클리어
 			{
-				system("cls");
-				printf("전투에서 승리했다! \n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				system("pause");
 				return 0;
 			}
 		}
-		/////////////////////////////////////////////////////////////////////////////////////////// 상대 포켓몬 공격턴
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 상대 포켓몬 공격턴
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0)////////////////////////////////////////////////////////////////////////////둘 다 생존 시 상대 공격
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 2);
 			DotSetPokemon(pokemon[1], 2, 28); ///////////////////////////////////////// 둘 다 생존 시) 파이리 공격턴
 			DotPrintScreen();
-			printf("%s의 몸통박치기!\n", pokemon[0].name);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplaneTextDB (" ", Enemy1Turn);
+			Sleep(1000);
 			*hp -= 20;
-			printf("체력이 20 줄었다! %d/100 \n\n", *hp);
+			DotPrintScreen();
+			PrintExplaneTextDB ("효과는 평범했다. ", Explain);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (*hp <= 0)
 			{
-				system("cls");
-				printf("눈 앞이 하얘졌다!\n\n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB ("눈 앞이 새하얘졌다.. ", Explain);
+				system("pause");
 				return 1;
 			}
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 2);
 			DotSetPokemon(pokemon[1], 2, 28); ////////////////////////////////////////// 둘 다 생존 시) 꼬부기 공격턴
 			DotPrintScreen();
-			printf("%s의 몸통박치기!\n", pokemon[1].name);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplaneTextDB(" ", Enemy2Turn);
+			Sleep(1000);
 			*hp -= 20;
-			printf("체력이 20 줄었다! %d/100 \n\n", *hp);
+			DotPrintScreen();
+			PrintExplaneTextDB("효과는 평범했다. ", Explain);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (*hp <= 0)
 			{
-				system("cls");
-				printf("눈 앞이 하얘졌다!\n\n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				system("pause");
 				return 1;
 			}
 		}
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ///////////////////////////////////////////////////////////////////////////파이리만 생존 시 상대 공격턴
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
-			printf("%s의 몸통박치기!\n", pokemon[0].name);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplaneTextDB(" ", Enemy1Turn);
+			Sleep(1000);
 			*hp -= 20;
-			printf("체력이 20 줄었다! %d/100 \n\n", *hp);
+			DotPrintScreen();
+			PrintExplaneTextDB("효과는 평범했다. ", Explain);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (*hp <= 0)
 			{
-				system("cls");
-				printf("눈 앞이 하얘졌다!\n\n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				system("pause");
 				return 1;
 			}
 		}
-		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0)
+		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0) //////////////////////////////////////////////////////////////////////꼬부기만 생존 시 상대 공격턴
 		{
 			DotSetBG(BackGr);
+			PrintTextZone();
 			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
-			printf("%s의 몸통박치기!\n", pokemon[1].name);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplaneTextDB(" ", Enemy2Turn);
+			Sleep(1000);
 			*hp -= 20;
-			printf("체력이 20 줄었다! %d/100 \n\n", *hp);
+			DotPrintScreen();
+			PrintExplaneTextDB("효과는 평범했다. ", Explain);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (*hp <= 0)
 			{
-				system("cls");
-				printf("눈 앞이 하얘졌다!\n\n");
+				DotSetBG(BackGr);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				system("pause");
 				return 1;
 			}
 		}
@@ -937,7 +1072,7 @@ void PrintTextZone()
 	{
 		for (int j = 0; j < 50; j++)
 		{
-			BattleField[i][j] = 7;
+			BattleField[i][j] = TextZone[i-30][j];
 		}
 	}
 }
@@ -946,14 +1081,14 @@ void PrintTextZone()
 void PrintSkillText(struct MyPokemon Eevee)
 {
 	SetColor(0, 7);
-	gotoxy(22, 32);
-	printf("1: %s", Eevee.Skill1);
-	gotoxy(57, 32);
-	printf("2: %s", Eevee.Skill2);
-	gotoxy(22, 37);
-	printf("3: %s", Eevee.Skill3);
-	gotoxy(57, 37);
-	printf("4: %s", Eevee.Skill4);
+	gotoxy(21, 32);
+	printf(" %s", Eevee.Skill1);
+	gotoxy(56, 32);
+	printf(" %s", Eevee.Skill2);
+	gotoxy(21, 37);
+	printf(" %s", Eevee.Skill3);
+	gotoxy(56, 37);
+	printf(" %s", Eevee.Skill4);
 	SetColor(15, 0);
 	gotoxy(0, 41);
 }
@@ -962,17 +1097,18 @@ void PrintSkillText(struct MyPokemon Eevee)
 void PrintPickEnemyText(char* Enemy1, char* Enemy2, char* Enemy3, char* Enemy4)
 {
 	SetColor(0, 7);
-	gotoxy(18, 32);
-	printf("%s", Enemy1);
-	gotoxy(53, 32);
-	printf("%s", Enemy2);
-	gotoxy(18, 37);
-	printf("%s", Enemy3);
-	gotoxy(53, 37);
-	printf("%s", Enemy4);
+	gotoxy(21, 32);
+	printf(" %s", Enemy1);
+	gotoxy(56, 32);
+	printf(" %s", Enemy2);
+	gotoxy(21, 37);
+	printf(" %s", Enemy3);
+	gotoxy(56, 37);
+	printf(" %s", Enemy4);
 	SetColor(15, 0);
 	gotoxy(0, 41);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////// 설명창 출력
 void PrintExplaneText(char* Text, struct Pokemon pokemon, int Situation)
@@ -983,7 +1119,7 @@ void PrintExplaneText(char* Text, struct Pokemon pokemon, int Situation)
 		gotoxy(38, 32);
 		printf("%s 가 승부를 걸어왔다. ", pokemon.name);
 		gotoxy(38, 35);
-		printf(" % s ", pokemon.name);
+		printf("%s ", pokemon.name);
 		gotoxy(38, 37);
 		printf("HP: %d  타입: %s ", pokemon.monhp, pokemon.type);
 	}
@@ -1005,4 +1141,340 @@ void gotoxy(int x, int y)
 {
 	COORD pos = { x,y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////// 더블배틀 설명창 출력
+void PrintExplaneTextDB(char* Text, int Situation)
+{
+	SetColor(0, 7);
+	if (Situation == EncountEnemy)
+	{
+		gotoxy(30, 32);
+		printf("%s와 %s가 승부를 걸어왔다. ", pokemon[0].name, pokemon[1].name);
+		gotoxy(30, 35);
+		printf("%s                 %s ", pokemon[0].name, pokemon[1].name);
+		gotoxy(30, 37);
+		printf("HP: %d  타입: %s      HP: %d  타입: %s", pokemon[0].monhp, pokemon[0].type, pokemon[1].monhp, pokemon[1].type);
+	}
+	else if (Situation == Explain)
+	{
+		gotoxy(38, 34);
+		printf("%s", Text);
+	}
+	else if (Situation == Enemy1Turn)
+	{
+		gotoxy(38, 34);
+		printf("%s의 몸통박치기! ", pokemon[0].name);
+	}
+	else if (Situation == Enemy2Turn)
+	{
+		gotoxy(38, 34);
+		printf("%s의 몸통박치기! ", pokemon[1].name);
+	}
+	else if (Situation == PickEnemy)
+	{
+		gotoxy(35, 32);
+		printf("누구에게 사용하시겠습니까? ");
+		gotoxy(30, 35);
+		printf(" %s                   %s ", pokemon[0].name, pokemon[1].name);
+	}
+	SetColor(15, 0);
+	gotoxy(0, 41);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////// 스킬 고르기 함수
+int ChoiceSkill()
+{
+	int ChoiceNum = 1;
+
+	SetColor(0, 7);
+	gotoxy(20, 32);
+	printf("▶");
+	SetColor(15, 0);
+	while (1)
+	{
+		int ArrowKeys = _getch();
+		if (ArrowKeys == 224 || ArrowKeys == 0)
+		{
+			ArrowKeys = _getch();
+			if (ChoiceNum == 1)
+			{
+				if (ArrowKeys == Right)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(55, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else if (ArrowKeys == Down)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(20, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 3;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 2)
+			{
+				if (ArrowKeys == Left)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(20, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else if (ArrowKeys == Down)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(55, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 4;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 3)
+			{
+				if (ArrowKeys == Up)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(20, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else if (ArrowKeys == Right)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(55, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 4;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 4)
+			{
+				if (ArrowKeys == Left)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(20, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 3;
+				}
+				else if (ArrowKeys == Up)
+				{
+					PrintSkillText(Eevee[0]);
+					SetColor(0, 7);
+					gotoxy(55, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else continue;
+			}
+		}
+		else if (ArrowKeys == 99)
+		{
+			break;
+		}
+		else if (ArrowKeys == 120)
+		{
+			ChoiceNum = 0;
+			break;
+		}
+		else continue;
+	}
+	return ChoiceNum;
+}
+
+///////////////////////////////////////////// 대전 상대 선택 함수
+int ChoiceMon()
+{
+	int ChoiceNum = 1;
+
+	SetColor(0, 7);
+	gotoxy(20, 32);
+	printf("▶");
+	SetColor(15, 0);
+	while (1)
+	{
+		int ArrowKeys = _getch();
+		if (ArrowKeys == 224 || ArrowKeys == 0)
+		{
+			ArrowKeys = _getch();
+			if (ChoiceNum == 1)
+			{
+				if (ArrowKeys == Right)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(55, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else if (ArrowKeys == Down)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(20, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 3;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 2)
+			{
+				if (ArrowKeys == Left)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(20, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else if (ArrowKeys == Down)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(55, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 4;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 3)
+			{
+				if (ArrowKeys == Up)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(20, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else if (ArrowKeys == Right)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(55, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 4;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 4)
+			{
+				if (ArrowKeys == Left)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(20, 37);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 3;
+				}
+				else if (ArrowKeys == Up)
+				{
+					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
+					SetColor(0, 7);
+					gotoxy(55, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else continue;
+			}
+		}
+		else if (ArrowKeys == 99)
+		{
+			break;
+		}
+		else continue;
+	}
+	return ChoiceNum;
+}
+
+/////////////////////////////////////////////////////////////////////////////// 스킬의 타켓 함수
+int ChoiceTarget()
+{
+	int ChoiceNum = 1;
+
+	SetColor(0, 7);
+	gotoxy(29, 35);
+	printf("▶");
+	SetColor(15, 0);
+
+	while (1)
+	{
+		int ArrowKeys = _getch();
+		if (ArrowKeys == 224 || ArrowKeys == 0)
+		{
+			ArrowKeys = _getch();
+			if (ChoiceNum == 1)
+			{
+				if (ArrowKeys == Right)
+				{
+					PrintExplaneTextDB(" ", PickEnemy);
+					SetColor(0, 7);
+					gotoxy(54, 35);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 2)
+			{
+				if (ArrowKeys == Left)
+				{
+					PrintExplaneTextDB(" ", PickEnemy);
+					SetColor(0, 7);
+					gotoxy(29, 35);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else continue;
+			}
+		}
+		else if (ArrowKeys == 99)
+		{
+			break;
+		}
+		else if (ArrowKeys == 120)
+		{
+			ChoiceNum = 0;
+			break;
+		}
+	}
+	return ChoiceNum;
+}
+
+//////////////////////////////////////////////////// 커서 없애기 함수
+void CursorView(char show)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+	GetConsoleCursorInfo(hConsole, &cursorInfo);
+	cursorInfo.bVisible = show;
+	SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
