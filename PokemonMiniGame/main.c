@@ -18,12 +18,34 @@
 #define Enemy1Turn 4
 #define Enemy2Turn 5
 #define PickEnemy 6
+#define UsingSkill 7
 #define Up 72
 #define Down 80
 #define Left 75
 #define Right 77
 #define TextZone_Garo 10
 #define TextZone_Sero 50
+#define Normal 0
+#define Fire 1
+#define Water 2
+#define Leaf 3
+/////////////////////////////////////////// 색 상수파트
+#define Black 0
+#define Blue 1
+#define Green 2
+#define Cyan 3
+#define Red 4
+#define Magenta 5
+#define Yellow 6
+#define LightGrey 7
+#define DarkGrey 8
+#define LightBlue 9
+#define LightGreen 10
+#define LightCyan 11
+#define LightRed 12
+#define LightMagenta 13
+#define LightYellow 14
+#define White 15
 
 //빈 배경 초기화
 int BattleField[BattleField_Garo][BattleField_Sero] = {
@@ -94,56 +116,59 @@ int TextZone[TextZone_Garo][TextZone_Sero] = {
 };
 
 ////////////////////구조체///////////////////////////
+////////////////적 포켓몬 구조체 선언
 struct Pokemon {
 	int PokeNum;  //포켓몬 고유 번호
 	char* name;   //포켓몬의 이름
 	int monhp;    //포켓몬의 체력
 	char* type;   //포켓몬의 타입
-	int typeNum;  //타입 고유 번호
-	int DotPokemon[PokemonDot_Garo][PokemonDot_Sero]; //도트 배열
+	int typeNum;  //포켓몬타입 고유 번호
+	int DotPokemon[PokemonDot_Garo][PokemonDot_Sero]; //정면 도트 배열
 };
 
-/////////// 포켓몬 구조체 초기화
+/////////// 적 포켓몬 구조체 초기화
 struct Pokemon pokemon[3] = {
-			{1,"파이리",100,"불",1,{{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,0,99,99,99,99},
-		{99,99,99,99,99,0,0,0,99,99,99,99,99,99,99,99,0,6,0,99,99,99},
-		{99,99,99,0,0,12,12,6,0,99,99,99,99,99,99,99,0,6,6,0,99,99},
-		{99,99,0,12,12,12,12,12,6,0,99,99,99,99,99,99,0,6,6,0,99,99},
-		{99,99,0,12,12,12,12,12,12,0,99,99,99,99,99,0,6,6,12,6,0,99},
-		{99,0,12,12,12,12,6,12,12,6,0,99,99,99,99,0,6,12,14,6,0,99},
-		{99,0,12,12,12,6,15,0,12,12,0,99,99,99,99,0,6,14,14,6,0,99},
-		{0,12,12,12,12,4,9,0,12,6,0,99,99,99,99,99,0,14,6,0,99,99},
-		{0,12,12,12,12,12,0,0,6,6,0,99,99,99,99,99,0,6,0,99,99,99},
-		{99,0,6,12,12,12,6,6,6,6,6,0,99,99,99,99,0,12,0,99,99,99},
-		{99,99,0,0,6,6,6,6,6,6,6,0,99,99,99,0,12,12,0,99,99,99},
-		{99,99,99,99,0,0,2,6,6,8,6,6,0,99,0,6,12,0,99,99,99,99},
-		{99,99,99,99,99,0,14,14,8,4,12,6,6,0,6,6,6,0,99,99,99,99},
-		{99,99,99,99,99,0,14,14,8,12,6,8,6,6,8,6,0,99,99,99,99,99},
-		{99,99,99,99,0,4,4,14,14,8,8,6,6,6,8,0,99,99,99,99,99,99},
-		{99,99,99,99,0,2,4,8,2,2,6,6,6,4,0,99,99,99,99,99,99,99},
-		{99,99,99,99,99,0,0,0,0,8,4,6,4,0,99,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,0,99,4,99,0,99,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,99,0,0,0,99,99,99,99,99,99,99,99,99}}},//여기까지 파이리
-			{2,"꼬부기",100,"물",2,{{99,99,99,0,0,0,0,99,99,99,99,99,99,99,99,99,0,0,0,99,99,99},
-		{99,99,0,3,9,9,9,0,0,99,99,99,99,99,99,0,9,9,9,0,99,99},
-		{99,0,9,9,9,9,9,9,3,0,0,99,99,99,0,9,9,9,3,3,0,99},
-		{99,0,9,9,9,9,9,9,9,8,2,0,0,99,0,9,9,3,8,3,0,99},
-		{0,9,9,9,9,3,9,9,9,3,8,10,2,0,3,9,3,8,3,3,0,99},
-		{0,9,9,9,3,15,0,9,9,3,8,2,10,2,8,3,3,8,3,0,99,99},
-		{0,9,9,9,3,0,0,9,3,3,8,99,2,10,8,3,3,8,0,99,99,99},
-		{99,0,9,9,9,0,10,3,3,8,99,99,2,10,2,8,3,0,99,99,99,99},
-		{99,99,0,8,3,3,3,3,8,3,8,99,99,2,10,8,3,0,99,99,99,99},
-		{99,99,0,3,8,8,8,10,14,8,9,8,99,2,2,8,0,99,99,99,99,99},
-		{99,99,99,0,0,14,14,14,8,9,9,9,8,2,10,0,99,99,99,99,99,99},
-		{99,99,99,99,99,0,10,10,8,9,9,3,8,2,10,0,99,99,99,99,99,99},
-		{99,99,99,99,0,3,8,14,14,8,3,8,8,15,0,99,99,99,99,99,99,99},
-		{99,99,99,99,0,3,3,0,10,10,8,8,3,8,0,99,99,99,99,99,99,99},
-		{99,99,99,99,99,0,0,99,0,8,9,3,3,0,99,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,0,3,3,3,0,99,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,99,0,0,0,99,99,99,99,99,99,99,99,99},
+			{1,"파이리",100,"불",Fire,{{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,Black,99,99,99,99},
+		{99,99,99,99,99,Black,Black,Black,99,99,99,99,99,99,99,99,Black,Red,Black,99,99,99},
+		{99,99,99,Black,Black,Yellow,Yellow,Yellow,Black,99,99,99,99,99,99,99,Black,Red,Red,Black,99,99},
+		{99,99,Black,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Black,99,99,99,99,99,99,Black,Red,Red,Black,99,99},
+		{99,99,Black,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Black,99,99,99,99,99,Black,Red,Red,Yellow,Red,Black,99},
+		{99,Black,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Black,99,99,99,99,Black,Red,Yellow,LightYellow,Red,Black,99},
+		{99,Black,Yellow,Yellow,Yellow,Yellow,White,Black,Yellow,Yellow,Black,99,99,99,99,Black,Red,LightYellow,LightYellow,Red,Black,99},
+		{Black,Yellow,Yellow,Yellow,Yellow,Yellow,Blue,Black,Yellow,Yellow,Black,99,99,99,99,99,Black,LightYellow,Yellow,Black,99,99},
+		{Black,Yellow,Yellow,Yellow,Yellow,Yellow,Black,Black,Yellow,Yellow,Black,99,99,99,99,99,Black,Red,Black,99,99,99},
+		{99,Black,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Black,99,99,99,99,Black,Yellow,Black,99,99,99},
+		{99,99,Black,Black,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Black,99,99,99,Black,Yellow,Yellow,Black,99,99,99},
+		{99,99,99,99,Black,Black,LightYellow,Yellow,Yellow,DarkGrey,Yellow,Yellow,Black,99,Black,Yellow,Yellow,Black,99,99,99,99},
+		{99,99,99,99,99,Black,LightYellow,LightYellow,DarkGrey,Red,Yellow,Yellow,Yellow,Black,Yellow,Yellow,Yellow,Black,99,99,99,99},
+		{99,99,99,99,99,Black,LightYellow,LightYellow,DarkGrey,Yellow,LightYellow,DarkGrey,Yellow,Yellow,DarkGrey,Yellow,Black,99,99,99,99,99},
+		{99,99,99,99,Black,Red,Red,LightYellow,LightYellow,DarkGrey,DarkGrey,Yellow,Yellow,Yellow,DarkGrey,Black,99,99,99,99,99,99},
+		{99,99,99,99,Black,DarkGrey,Red,DarkGrey,LightYellow,LightYellow,Yellow,Yellow,Yellow,Red,Black,99,99,99,99,99,99,99},
+		{99,99,99,99,99,Black,Black,Black,Black,DarkGrey,Red,Yellow,Red,Black,99,99,99,99,99,99,99,99},
+		{99,99,99,99,99,99,99,99,99,Black,White,Red,White,Black,99,99,99,99,99,99,99,99},
+		{99,99,99,99,99,99,99,99,99,99,Black,Black,Black,99,99,99,99,99,99,99,99,99}
+		}},//여기까지 파이리
+			{2,"꼬부기",100,"물",Water,{{99,99,99,Black,Black,Black,Black,99,99,99,99,99,99,99,99,99,Black,Black,Black,99,99,99},
+		{99,99,Black,Cyan,LightBlue,LightBlue,LightBlue,Black,Black,99,99,99,99,99,99,Black,LightBlue,LightBlue,LightBlue,Black,99,99},
+		{99,Black,LightBlue,LightBlue,LightBlue,LightBlue,LightBlue,LightBlue,Cyan,Black,Black,99,99,99,Black,LightBlue,LightBlue,LightBlue,Cyan,Cyan,Black,99},
+		{99,Black,LightBlue,LightBlue,LightBlue,LightBlue,LightBlue,LightBlue,LightBlue,DarkGrey,Yellow,Black,Black,99,Black,LightBlue,LightBlue,Cyan,DarkGrey,Cyan,Black,99},
+		{Black,LightBlue,LightBlue,LightBlue,LightBlue,Cyan,LightBlue,LightBlue,LightBlue,Cyan,DarkGrey,LightYellow,Yellow,Black,Cyan,LightBlue,Cyan,DarkGrey,Cyan,Cyan,Black,99},
+		{Black,LightBlue,LightBlue,LightBlue,Cyan,White,Black,LightBlue,LightBlue,Cyan,DarkGrey,Yellow,LightYellow,Yellow,DarkGrey,Cyan,Cyan,DarkGrey,Cyan,Black,99,99},
+		{Black,LightBlue,LightBlue,LightBlue,Cyan,Black,Black,LightBlue,Cyan,Cyan,DarkGrey,White,Yellow,LightYellow,DarkGrey,Cyan,Cyan,DarkGrey,Black,99,99,99},
+		{99,Black,LightBlue,LightBlue,LightBlue,Black,LightGrey,Cyan,Cyan,DarkGrey,White,White,Yellow,LightYellow,Yellow,DarkGrey,Cyan,Black,99,99,99,99},
+		{99,99,Black,DarkGrey,Cyan,Cyan,Cyan,Cyan,DarkGrey,Cyan,DarkGrey,White,White,Yellow,LightYellow,DarkGrey,Cyan,Black,99,99,99,99},
+		{99,99,Black,Cyan,DarkGrey,DarkGrey,DarkGrey,Yellow,LightYellow,DarkGrey,LightBlue,DarkGrey,White,Yellow,Yellow,DarkGrey,Black,99,99,99,99,99},
+		{99,99,99,Black,Black,LightYellow,LightYellow,LightYellow,DarkGrey,LightBlue,LightBlue,LightBlue,DarkGrey,Yellow,LightYellow,Black,99,99,99,99,99,99},
+		{99,99,99,99,99,Black,Yellow,Yellow,DarkGrey,LightBlue,LightBlue,Cyan,DarkGrey,Yellow,LightYellow,Black,99,99,99,99,99,99},
+		{99,99,99,99,Black,Cyan,DarkGrey,LightYellow,LightYellow,DarkGrey,Cyan,DarkGrey,DarkGrey,White,Black,99,99,99,99,99,99,99},
+		{99,99,99,99,Black,Cyan,Cyan,Black,Yellow,Yellow,DarkGrey,DarkGrey,Cyan,DarkGrey,Black,99,99,99,99,99,99,99},
+		{99,99,99,99,99,Black,Black,99,Black,DarkGrey,LightBlue,Cyan,Cyan,Black,99,99,99,99,99,99,99,99},
+		{99,99,99,99,99,99,99,99,99,Black,Cyan,Cyan,Cyan,Black,99,99,99,99,99,99,99,99},
+		{99,99,99,99,99,99,99,99,99,99,Black,Black,Black,99,99,99,99,99,99,99,99,99},
 		{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}}}, //여기까지 꼬부기
-			{3,"이상해씨",100,"풀",3,{{99,99,99,99,99,99,99,99,99,99,99,99,0,99,0,99,99,99,99,99,99,99},
+		{99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99}
+		}}, //여기까지 꼬부기
+			{3,"이상해씨",100,"풀",Leaf,{{99,99,99,99,99,99,99,99,99,99,99,99,0,99,0,99,99,99,99,99,99,99},
 		{99,99,99,99,99,99,99,99,99,99,99,0,10,0,10,0,99,99,99,99,99,99},
 		{99,99,99,99,99,99,99,99,99,99,0,0,2,10,2,0,99,99,99,99,99,99},
 		{99,99,99,99,99,99,99,99,0,0,2,9,9,2,9,2,0,0,99,99,99,99},
@@ -161,28 +186,169 @@ struct Pokemon pokemon[3] = {
 		{99,99,0,0,2,2,2,2,2,2,8,2,9,9,8,2,15,0,99,99,99,99},
 		{99,99,99,99,0,0,0,0,0,0,2,2,2,2,8,0,0,99,99,99,99,99},
 		{99,99,99,99,99,99,99,99,99,0,15,2,15,8,0,99,99,99,99,99,99,99},
-		{99,99,99,99,99,99,99,99,99,99,0,0,0,0,99,99,99,99,99,99,99,99}}}  //여기까지 이상해씨
+		{99,99,99,99,99,99,99,99,99,99,0,0,0,0,99,99,99,99,99,99,99,99}
+		}}  //여기까지 이상해씨
 };
 
-struct BackGr {
-	int Grass[BackGr_Garo][BackGr_Sero]; //풀숲 배경
-}BackGr;
-
-/////////// 내 포켓몬 이브이 선언
+///////////////아군 포켓몬 구조체 선언
 struct MyPokemon {
-	char* name; // 이브이의 이름
-	int monhp;  // 체력
-	char* type; // 타입
-	char* Skill1; // 스킬목록
-	char* Skill2;
-	char* Skill3;
-	char* Skill4;
+	int PokeNum;
+	int Skill1;
+	int Skill2;
+	int Skill3;
+	char* name;
+	int monhp;
+	char* type;
+	int typeNum;
+	int DotPokemon[PokemonDot_Garo][PokemonDot_Sero];
 };
 
-////////////// 내 포켓몬 이브이 초기화
-struct MyPokemon Eevee[] = {
-	{"이브이", 100, "노말", "불꽃세례", "물대포", "덩굴채찍", "HP회복"}
+////////////아군 포켓몬 구조체 초기화
+struct MyPokemon MyPokemon[3] = {
+	{1,1,0,4,"파이리", 100,"불",Fire,
+	{
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White}
+    }},
+	{2,2,0,4,"꼬부기",100,"물",Water,
+	{
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White}
+    }},
+	{3,3,0,4,"이상해씨",100,"풀",Leaf,
+	{
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White},
+	{White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White,White}
+    }}
 };
+
+//////////////////풀숲 배경 선언
+struct BackGr {
+	int Grass[BackGr_Garo][BackGr_Sero];
+};
+
+////////////////////////풀숲 배경 초기화
+struct BackGr BackGr = { {
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green},
+	{Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green}
+}};
+
+/////////// 포켓몬 기술 선언
+struct Skill {
+	int Num; //스킬 고유 번호
+	char* name; //스킬 이름
+	int typeNum; //스킬 타입 번호
+	int Dmg; //스킬 데미지
+};
+/////////// 포켓몬 기술 정의
+struct Skill skill[5] = {
+	{0, "몸통박치기", Normal, 20},
+	{1, "불꽃세례", Fire, 30},
+	{2, "물대포", Water, 30},
+	{3, "덩굴채찍", Leaf, 30},
+	{4, "HP회복", Normal, 50}
+};
+
+
 
 ////////////////
 ////함수////////
@@ -198,10 +364,10 @@ void DotPrintScreen();
 void gotoxy(int x, int y);
 
 //더블 배틀 함수 선언
-int DoubleBattle(struct Pokemon* pokemon, int* hp);
+int DoubleBattle(struct Pokemon* pokemon, struct MyPokemon MyPokemon);
 
 //단일 배틀 함수 선언
-int Battle(struct Pokemon pokemon, int* hp);
+int Battle(struct Pokemon pokemon, struct MyPokemon MyPokemon);
 
 //콘솔 화면 크기
 int SetConsoleSizeStable(short cols, short lines, short scrollLine);
@@ -219,25 +385,40 @@ void PrintTextZone();
 void PrintSkillText(struct MyPokemon Eevee);
 
 //설명창 텍스트 출력 함수
-void PrintExplaneText(char *Text, struct Pokemon pokemon, int Situation);
+void PrintExplainText(char *Text, struct Pokemon pokemon, struct MyPokemon MyPokemon, int Situation, int skillNum);
 
 //적 몬스터 선택창 출력 함수
 void PrintPickEnemyText(char* Enemy1, char* Enemy2, char* Enemy3, char* Enemy4);
 
 //설명창 텍스트 출력 함수
-void PrintExplaneTextDB(char* Text,  int Situation);
+void PrintExplainTextDB(char* Text,  int Situation);
 
 //화살표 및 스킬 선택 함수
-int ChoiceSkill();
+int ChoiceSkill(struct MyPokemon MyPokemon);
 
 //화살표 및 상대 몬스터 선택 함수
-int ChoiceMon();
+int ChoiceEnemyMon();
 
 //화살표 및 더블배틀 스킬 타켓 선택 함수
 int ChoiceTarget();
 
 //커서 숨기기 함수
 void CursorView(char show);
+
+//아군 포켓몬 선택 함수
+int ChoicePokeText();
+
+//아군 포켓몬 선택지 출력 함수
+void PrintPickPokeText(int num);
+
+//아군 포켓몬 도트 입히기 함수
+void DotSetMyPokemon(struct MyPokemon MyPokemon, int StartX, int StartY);
+
+//스킬 사용 시 상호작용 함수
+int ResultSkill(struct Pokemon pokemon, struct MyPokemon MyPokemon, int skillNum);
+
+//스킬 사용 시 상호작용 더블배틀 함수
+int ResultSkillDB(int target, struct MyPokemon MyPokemon, int skillNum);
 
 
 ////////////////메인 함수////////////////////
@@ -248,16 +429,9 @@ int main(void)
 	while (1)
 	{
 		//////////////// 배경 초기화
-		for (int i = 0; i < 50; i++)
-		{
-			for (int j = 0; j < 50; j++)
-			{
-				BackGr.Grass[i][j] = 10;
-			}
-		}
+		
 
 		//////////////////////////////////플레이어 초기화
-		int hp = 100;   //플레이어 체력
 		int xp = 0;     //플레이어 경험치
 		int pokeNum = 0;//상대 선택용 변수
 		int win = 0, quit = 0; //승패 기록용, 다시하기 여부 변수
@@ -265,10 +439,49 @@ int main(void)
 		//게임시작!!!!!!!!!!!!!!!
 		while (1)
 		{
+			int MyPoke = 0;
 			pokemon[0].monhp = 100;
+			MyPokemon[0].monhp = 100;
 			pokemon[1].monhp = 100;
-			printf("세 포켓몬 중 누구와 싸울텐가?\n\n"); //////////선택지 제시, 야생 몬스터 도트 출력과 정보 표시
-			Sleep(1500);
+			MyPokemon[1].monhp = 100;
+			pokemon[2].monhp = 100;
+			MyPokemon[2].monhp = 100;
+
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotPrintScreen();
+			PrintExplainText("어떤 포켓몬과 함께 전투 하시겠습니까?", pokemon[0], MyPokemon[0], Explain, 1);
+			system("pause");
+
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[0], 2, 15);
+			DotPrintScreen();
+			PrintPickPokeText(1);
+			Sleep(1000);
+
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[1], 2, 15);
+			DotPrintScreen();
+			PrintPickPokeText(2);
+			Sleep(1000);
+
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotSetPokemon(pokemon[2], 2, 15);
+			DotPrintScreen();
+			PrintPickPokeText(3);
+			Sleep(1000);
+
+			system("pause");
+			MyPoke = ChoicePokeText();
+
+			DotSetBG(BackGr);
+			PrintTextZone();
+			DotPrintScreen();
+			PrintExplainText("상대 포켓몬 중 누구와 싸우겠습니까?", pokemon[0], MyPokemon[0], Explain, 1);
+			system("pause");
 
 			DotSetBG(BackGr);
 			PrintTextZone();
@@ -300,17 +513,17 @@ int main(void)
 			system("pause");
 
 			//////////////야생 포켓몬 선택
-			pokeNum = ChoiceMon();
+			pokeNum = ChoiceEnemyMon();
 
 			if (pokeNum == 4)
-				win = DoubleBattle(pokemon, &hp);  //////////////////////////////////////////////더블 배틀 함수 호출
+				win = DoubleBattle(pokemon, MyPokemon[MyPoke-1]);  //////////////////////////////////////////////더블 배틀 함수 호출
 			else if (pokeNum != 1 && pokeNum != 2 && pokeNum != 3 && pokeNum != 4)
 			{
 				system("cls");
 				continue;   /////선택지 외의 숫자 선택 시 다시 선택
 			}
 			else
-				win = Battle(pokemon[pokeNum - 1], &hp); //////////////////배틀함수 호출
+				win = Battle(pokemon[pokeNum - 1], MyPokemon[MyPoke-1]); //////////////////배틀함수 호출
 
 			//int battle(struct Pokemon pokemon, int* hp);
 			//win = Battle(pokemon[pokeNum - 49], &hp); //////////////////배틀함수 호출
@@ -319,15 +532,14 @@ int main(void)
 			if (win == 0) {
 				xp += 25;
 				DotPrintScreen();
-				PrintExplaneText("경험치를 획득했습니다. ",pokemon[0], Explain);
+				PrintExplainText("경험치를 획득했습니다. ",pokemon[0], MyPokemon[0], Explain, 1);
 				printf("%d/100 \n", xp);
 				system("pause");
 				system("cls");
 			}
 			else if (win == 1)
 			{
-				PrintExplaneText("체력이 회복됐다. ", pokemon[0], Explain);
-				hp = 100;
+				PrintExplainText("패배했다. ", pokemon[0], MyPokemon[0], Explain, 1);
 				system("pause");
 				system("cls");
 				continue;
@@ -338,7 +550,7 @@ int main(void)
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneText("목표를 달성했습니다. ", pokemon[0], Explain);
+				PrintExplainText("목표를 달성했습니다. ", pokemon[0], MyPokemon[0], Explain, 1);
 				system("pause");
 				system("cls");
 				break;
@@ -378,57 +590,69 @@ void DotPrintScreen()
 	{
 		for (int j = 0; j < 50; j++)
 		{
-			if (BattleField[i][j] == 15)
-			{
-				SetColor(15, 15);
-			}
-			else if (BattleField[i][j] == 0)
+			if (BattleField[i][j] == Black)
 			{
 				SetColor(0, 0);
 			}
-			else if (BattleField[i][j] == 13)
+			else if (BattleField[i][j] == Blue)
 			{
-				SetColor(13, 13);
+				SetColor(1, 1);
 			}
-			else if (BattleField[i][j] == 6)
-			{
-				SetColor(6, 6);
-			}
-			else if (BattleField[i][j] == 4)
-			{
-				SetColor(4, 4);
-			}
-			else if (BattleField[i][j] == 14)
-			{
-				SetColor(14, 14);
-			}
-			else if (BattleField[i][j] == 12)
-			{
-				SetColor(12, 12);
-			}
-			else if (BattleField[i][j] == 8)
-			{
-				SetColor(8, 8);
-			}
-			else if (BattleField[i][j] == 10)
-			{
-				SetColor(10, 10);
-			}
-			else if (BattleField[i][j] == 9)
-			{
-				SetColor(9, 9);
-			}
-			else if (BattleField[i][j] == 2)
+			else if (BattleField[i][j] == Green)
 			{
 				SetColor(2, 2);
 			}
-			else if (BattleField[i][j] == 3)
+			else if (BattleField[i][j] == Cyan)
 			{
 				SetColor(3, 3);
 			}
-			else if (BattleField[i][j] == 7)
+			else if (BattleField[i][j] == Red)
+			{
+				SetColor(4, 4);
+			}
+			else if (BattleField[i][j] == Magenta)
+			{
+				SetColor(5, 5);
+			}
+			else if (BattleField[i][j] == Yellow)
+			{
+				SetColor(6, 6);
+			}
+			else if (BattleField[i][j] == LightGrey)
 			{
 				SetColor(7, 7);
+			}
+			else if (BattleField[i][j] == DarkGrey)
+			{
+				SetColor(8, 8);
+			}
+			else if (BattleField[i][j] == LightBlue)
+			{
+				SetColor(9, 9);
+			}
+			else if (BattleField[i][j] == LightGreen)
+			{
+				SetColor(10, 10);
+			}
+			else if (BattleField[i][j] == LightCyan)
+			{
+				SetColor(11, 11);
+			}
+			else if (BattleField[i][j] == LightRed)
+			{
+				SetColor(12, 12);
+			}
+			else if (BattleField[i][j] == LightMagenta)
+			{
+				SetColor(13, 13);
+			}
+			else if (BattleField[i][j] == LightYellow)
+			{
+				SetColor(14, 14);
+			}
+			else if (BattleField[i][j] == White)
+			{
+				SetColor(15, 15);
 			}
 			else if (BattleField[i][j] == 78)
 			{
@@ -472,99 +696,68 @@ void DotPrintScreen()
 
 
 ///////////////// 배틀함수
-int Battle(struct Pokemon pokemon, int* hp)
+int Battle(struct Pokemon pokemon, struct MyPokemon MyPokemon)
 {
 	DotSetBG(BackGr);
+	DotSetMyPokemon(MyPokemon, 20, 2);
 	PrintTextZone();
-	DotSetPokemon(pokemon, 2, 15);
+	DotSetPokemon(pokemon, 0, 27);
 	DotPrintScreen();
-	PrintExplaneText("", pokemon, EncountEnemy);
+	PrintExplainText("", pokemon, MyPokemon, EncountEnemy, 1);
 	Sleep(1500);
 
 	while (1)
 	{
+		int result = 0;
 		int Pskill = 0;
 		DotSetBG(BackGr);
+		DotSetMyPokemon(MyPokemon, 20, 2);
 		PrintTextZone();
-		DotSetPokemon(pokemon, 2, 15);
+		DotSetPokemon(pokemon, 0, 27);
 		DotPrintScreen();
-		PrintSkillText(Eevee[0]);
-		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
-		Pskill = ChoiceSkill();
+		PrintSkillText(MyPokemon);
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+		system("pause");
+		Pskill = ChoiceSkill(MyPokemon);
 		DotSetBG(BackGr);
+		DotSetMyPokemon(MyPokemon, 20, 2);
 		PrintTextZone();
-		DotSetPokemon(pokemon, 2, 15);
+		DotSetPokemon(pokemon, 0, 27);
 		DotPrintScreen();
-		if (Pskill == 1)
+
+		PrintExplainText(" ", pokemon, MyPokemon, UsingSkill, Pskill);
+		result = ResultSkill(pokemon, MyPokemon, Pskill);
+		Sleep(1000);
+
+		if (result == 0)
 		{
-			PrintExplaneText("불꽃세례! ", pokemon, Explain);
-			Sleep(1000);
-			if (pokemon.typeNum == 3)
-			{
-				pokemon.monhp -= 30 * 2;
-				PrintExplaneText("효과가 굉장했다! ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 1)
-			{
-				pokemon.monhp -= 30;
-				PrintExplaneText("효과는 보통이었다. ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 2)
-			{
-				pokemon.monhp -= 30 / 2;
-				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
-			}
+			pokemon.monhp -= skill[MyPokemon.Skill1].Dmg / 2;
+			PrintExplainText("효과가 별로였다. ", pokemon, MyPokemon, Explain, 1);
 		}
-		else if (Pskill == 2)
+		else if (result == 1)
 		{
-			PrintExplaneText("물대포! ", pokemon, Explain);
-			Sleep(1000);
-			if (pokemon.typeNum == 1)
-			{
-				pokemon.monhp -= 30 * 2;
-				PrintExplaneText("효과가 굉장했다! ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 2)
-			{
-				pokemon.monhp -= 30;
-				PrintExplaneText("효과는 보통이었다. ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 3)
-			{
-				pokemon.monhp -= 30 / 2;
-				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
-			}
+			pokemon.monhp -= skill[MyPokemon.Skill1].Dmg;
+			PrintExplainText("효과는 보통이었다. ", pokemon, MyPokemon, Explain, 1);
 		}
-		else if (Pskill == 3)
+		else if (result == 2)
 		{
-			PrintExplaneText("덩굴채찍! ", pokemon, Explain);
-			Sleep(1000);
-			if (pokemon.typeNum == 2)
-			{
-				pokemon.monhp -= 30 * 2;
-				PrintExplaneText("효과가 굉장했다! ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 3)
-			{
-				pokemon.monhp -= 30;
-				PrintExplaneText("효과는 보통이었다. ", pokemon, Explain);
-			}
-			else if (pokemon.typeNum == 1)
-			{
-				pokemon.monhp -= 30 / 2;
-				PrintExplaneText("효과가 별로였다. ", pokemon, Explain);
-			}
+			pokemon.monhp -= skill[MyPokemon.Skill1].Dmg * 2;
+			PrintExplainText("효과가 굉장했다! ", pokemon, MyPokemon, Explain, 1);
 		}
-		else if (Pskill == 4)
+		else if (result == 3)
 		{
-			PrintExplaneText("HP회복! ", pokemon, Explain);
-			Sleep(1000);
-			*hp += 50;
-			if (*hp > 100)*hp = 100;
-			PrintExplaneText("체력을 회복했다. ", pokemon, Explain);
+			pokemon.monhp -= skill[MyPokemon.Skill2].Dmg;
+			PrintExplainText("효과는 보통이었다. ", pokemon, MyPokemon, Explain, 1);
+		}
+		else if (result == 4)
+		{
+			MyPokemon.monhp += skill[MyPokemon.Skill3].Dmg;
+			if (MyPokemon.monhp > 100)MyPokemon.monhp = 100;
+			PrintExplainText("체력을 회복했다. ", pokemon, MyPokemon, Explain, 1);
 		}
 		else continue;
-		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
+		if (pokemon.monhp < 0)pokemon.monhp = 0;
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 		system("pause");
 
 		if (pokemon.monhp <= 0)
@@ -572,30 +765,32 @@ int Battle(struct Pokemon pokemon, int* hp)
 			DotSetBG(BackGr);
 			PrintTextZone();
 			DotPrintScreen();
-			PrintExplaneText("전투에서 승리했다! ", pokemon, Explain);
+			PrintExplainText("전투에서 승리했다! ", pokemon, MyPokemon, Explain, 1);
 			system("pause");
 			return 0;
 		}
 
 		//상대 턴
 		DotSetBG(BackGr);
+		DotSetMyPokemon(MyPokemon, 20, 2);
 		PrintTextZone();
-		DotSetPokemon(pokemon, 2, 15);
+		DotSetPokemon(pokemon, 0, 27);
 		DotPrintScreen();
-		PrintExplaneText(" ", pokemon, EnemyTurn);
+		PrintExplainText(" ", pokemon, MyPokemon, EnemyTurn, 1);
 		Sleep(1000);
-		*hp -= 30;
+		MyPokemon.monhp -= 30;
+		if (MyPokemon.monhp < 0) MyPokemon.monhp = 0;
 		DotPrintScreen();
-		PrintExplaneText("효과는 보통이었다. ", pokemon, Explain);
-		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, *hp); /////////////////////////////////// 임시 체력 표시
+		PrintExplainText("효과는 보통이었다. ", pokemon, MyPokemon, Explain, 1);
+		printf("상대 체력: %d        내 체력: %d \n", pokemon.monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 		system("pause");
 
-		if (*hp <= 0)
+		if (MyPokemon.monhp <= 0)
 		{
 			DotSetBG(BackGr);
 			PrintTextZone();
 			DotPrintScreen();
-			PrintExplaneText("눈 앞이 새하얘졌다.. ", pokemon, Explain);
+			PrintExplainText("눈 앞이 새하얘졌다.. ", pokemon, MyPokemon, Explain, 1);
 			system("pause");
 			return 1;
 		}
@@ -603,19 +798,21 @@ int Battle(struct Pokemon pokemon, int* hp)
 }
 
 ////////////////////더블 배틀 함수
-int DoubleBattle(struct Pokemon* pokemon, int* hp)
+int DoubleBattle(struct Pokemon* pokemon, struct MyPokemon MyPokemon)
 {
 	DotSetBG(BackGr);
-	DotSetPokemon(pokemon[0], 2, 2);
-	DotSetPokemon(pokemon[1], 2, 28);
+	DotSetPokemon(pokemon[0], 0, 5);
+	DotSetPokemon(pokemon[1], 0, 27);
+	DotSetMyPokemon(MyPokemon, 20, 2);
 	PrintTextZone();
 	DotPrintScreen();
-	PrintExplaneTextDB("", EncountEnemy);
-	printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+	PrintExplainTextDB("", EncountEnemy);
+	printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 	Sleep(1000);
 
 	while (1)
 	{
+		int result = 0;
 		int Fskill = 0; //1번 스킬
 		int Sskill = 0; //2번 스킬
 		int choice1 = 0; //1번 대상 지정
@@ -623,26 +820,30 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0) //////////////////////////////////////파이리 꼬부기 모두 살아있을 때
 		{
 			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 0, 5);
+			DotSetPokemon(pokemon[1], 0, 27);
+			DotSetMyPokemon(MyPokemon, 20, 2);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 2);
-			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
-			PrintSkillText(Eevee[0]);
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			Fskill = ChoiceSkill();  ///////////////////////1번 스킬 선택
+			PrintSkillText(MyPokemon);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
+			Fskill = ChoiceSkill(MyPokemon);  ///////////////////////1번 스킬 선택
 			if (Fskill == 0) ////////// 스킬 재선택
 			{
 				continue;
 			}
-			else if (Fskill == 1 || Fskill == 2 || Fskill == 3)
+			else if (Fskill == 1 || Fskill == 2)
 			{
 				DotSetBG(BackGr);
+				DotSetPokemon(pokemon[0], 0, 5);
+				DotSetPokemon(pokemon[1], 0, 27);
+				DotSetMyPokemon(MyPokemon, 20, 2);
 				PrintTextZone();
-				DotSetPokemon(pokemon[0], 2, 2);
-				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
-				PrintExplaneTextDB("", PickEnemy);
-				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+				PrintExplainTextDB("", PickEnemy);
+				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+				system("pause");
 				choice1 = ChoiceTarget(); ///////////////////////////1번 스킬 대상 지정
 
 				if (choice1 == 0) ////////////////////////////////////// 대상 재선택
@@ -652,27 +853,31 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 			}
 
 			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 0, 5);
+			DotSetPokemon(pokemon[1], 0, 27);
+			DotSetMyPokemon(MyPokemon, 20, 2);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 2);
-			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
-			PrintSkillText(Eevee[0]);
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			Sskill = ChoiceSkill(); ////////////////////2번 스킬 선택
+			PrintSkillText(MyPokemon);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
+			Sskill = ChoiceSkill(MyPokemon); ////////////////////2번 스킬 선택
 
 			if (Sskill == 0) ///////// 스킬 재선택
 			{
 				continue;
 			}
-			else if (Sskill == 1 || Sskill == 2 || Sskill == 3)
+			else if (Sskill == 1 || Sskill == 2)
 			{
 				DotSetBG(BackGr);
+				DotSetPokemon(pokemon[0], 0, 5);
+				DotSetPokemon(pokemon[1], 0, 27);
+				DotSetMyPokemon(MyPokemon, 20, 2);
 				PrintTextZone();
-				DotSetPokemon(pokemon[0], 2, 2);
-				DotSetPokemon(pokemon[1], 2, 28);
 				DotPrintScreen();
-				PrintExplaneTextDB("", PickEnemy);
-				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+				PrintExplainTextDB("", PickEnemy);
+				printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+				system("pause");
 				choice2 = ChoiceTarget(); ///////////////////////////1번 스킬 대상 지정
 
 				if (choice2 == 0) ////////////////////////////////////// 대상 재선택
@@ -681,105 +886,83 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				}
 			}
 			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 0, 5);
+			DotSetPokemon(pokemon[1], 0, 27);
+			DotSetMyPokemon(MyPokemon, 20, 2);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 2);
-			DotSetPokemon(pokemon[1], 2, 28);
 			DotPrintScreen();
-			if (Fskill == 1) { /////////////////////////////////////////////////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 1번 선택
-				PrintExplaneTextDB ("불꽃세례! ", Explain);
-				Sleep(1000);
-				if (choice1 == 1) {
-					pokemon[0].monhp -= 30;
-					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30 / 2;
-					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
-				}
+
+			PrintExplainText(" ", pokemon[0], MyPokemon, UsingSkill, Fskill);
+			result = ResultSkillDB(choice1, MyPokemon, Fskill);
+			Sleep(1000);
+
+			if (result == 0)
+			{
+				pokemon[choice1 - 1].monhp -= skill[MyPokemon.Skill1].Dmg / 2;
+				PrintExplainText("효과가 별로였다. ", pokemon[choice1 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 2) { /////////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 2번 선택
-				PrintExplaneTextDB ("물대포! ", Explain);
-				Sleep(1000);
-				if (choice1 == 1) {
-					pokemon[0].monhp -= 30 * 2;
-					PrintExplaneTextDB ("효과가 굉장했다! ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30;
-					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
-				}
+			else if (result == 1)
+			{
+				pokemon[choice1 - 1].monhp -= skill[MyPokemon.Skill1].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[choice1 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 3) { //////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 3번 선택
-				PrintExplaneText("덩굴채찍! ", pokemon[0], Explain);
-				Sleep(1000);
-				if (choice1 == 1) {
-					pokemon[0].monhp -= 30 / 2;
-					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30 * 2;
-					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
-				}
+			else if (result == 2)
+			{
+				pokemon[choice1 - 1].monhp -= skill[MyPokemon.Skill1].Dmg * 2;
+				PrintExplainText("효과가 굉장했다! ", pokemon[choice1 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 4) { ////////////////////////////////////////////////////////// 둘 다 생존) 1번 스킬로 4번(회복) 선택
-				PrintExplaneTextDB ("HP회복! ", Explain);
-				*hp += 50;
-				if (*hp > 100)*hp = 100;
-				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
+			else if (result == 3)
+			{
+				pokemon[choice1 - 1].monhp -= skill[MyPokemon.Skill2].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[choice1 - 1], MyPokemon, Explain, 1);
 			}
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			else if (result == 4)
+			{
+				MyPokemon.monhp += skill[MyPokemon.Skill3].Dmg;
+				if (MyPokemon.monhp > 100)MyPokemon.monhp = 100;
+				PrintExplainText("체력을 회복했다. ", pokemon[choice1 - 1], MyPokemon, Explain, 1);
+			}
+			else continue;
+			if (pokemon[0].monhp < 0)pokemon[0].monhp = 0;
+			if (pokemon[1].monhp < 0)pokemon[1].monhp = 0;
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 			DotPrintScreen();
 
-			if (Sskill == 1) { /////////////////////////////////////////////////////////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 1번
-				PrintExplaneTextDB("불꽃세례! ", Explain);
-				if (choice2 == 1) {
-					pokemon[0].monhp -= 30;
-					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30 / 2;
-					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
-				}
+			PrintExplainText(" ", pokemon[1], MyPokemon, UsingSkill, Sskill);
+			result = ResultSkillDB(choice2, MyPokemon, Sskill);
+			Sleep(1000);
+
+			if (result == 0)
+			{
+				pokemon[choice2 - 1].monhp -= skill[MyPokemon.Skill1].Dmg / 2;
+				PrintExplainText("효과가 별로였다. ", pokemon[choice2 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Sskill == 2) { ///////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 2번
-				PrintExplaneTextDB("물대포! ", Explain);
-				Sleep(1000);
-				if (choice2 == 1) {
-					pokemon[0].monhp -= 30 * 2;
-					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30;
-					PrintExplaneTextDB ("효과는 평범했다. ", Explain);
-				}
+			else if (result == 1)
+			{
+				pokemon[choice2 - 1].monhp -= skill[MyPokemon.Skill1].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[choice2 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Sskill == 3) { ////////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 3번
-				PrintExplaneTextDB("덩굴채찍! ", Explain);
-				Sleep(1000);
-				if (choice2 == 1) {
-					pokemon[0].monhp -= 30 / 2;
-					PrintExplaneTextDB ("효과는 별로였다. ", Explain);
-				}
-				else
-				{
-					pokemon[1].monhp -= 30 * 2;
-					PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
-				}
+			else if (result == 2)
+			{
+				pokemon[choice2 - 1].monhp -= skill[MyPokemon.Skill1].Dmg * 2;
+				PrintExplainText("효과가 굉장했다! ", pokemon[choice2 - 1], MyPokemon, Explain, 1);
 			}
-			else if (Sskill == 4) { //////////////////////////////////////////////////////////둘 다 생존) 2번 스킬 4번
-				PrintExplaneTextDB ("HP회복! ", Explain);
-				Sleep(1000);
-				*hp += 50;
-				if (*hp > 100)*hp = 100;
-				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
+			else if (result == 3)
+			{
+				pokemon[choice2 - 1].monhp -= skill[MyPokemon.Skill2].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[choice2 - 1], MyPokemon, Explain, 1);
 			}
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			else if (result == 4)
+			{
+				MyPokemon.monhp += skill[MyPokemon.Skill3].Dmg;
+				if (MyPokemon.monhp > 100)MyPokemon.monhp = 100;
+				PrintExplainText("체력을 회복했다. ", pokemon[choice2 - 1], MyPokemon, Explain, 1);
+			}
+			else continue;
+			if (pokemon[0].monhp < 0)pokemon[0].monhp = 0;
+			if (pokemon[1].monhp < 0)pokemon[1].monhp = 0;
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) ////////////// 클리어 시
@@ -787,66 +970,82 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				PrintExplainTextDB ("전투에서 승리했다! ", Explain);
 				system("pause");
 				return 0;
 			}
 
 			if (pokemon[0].monhp <= 0) ////////// 파이리 사망
 			{
-				PrintExplaneTextDB ("파이리는 쓰러졌다. ", Explain);
+				DotSetBG(BackGr);
+				DotSetMyPokemon(MyPokemon, 20, 2);
+				DotSetPokemon(pokemon[1], 0, 27);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplainTextDB ("파이리는 쓰러졌다. ", Explain);
 				system("pause");
 			}
 			else if (pokemon[1].monhp <= 0) ///////// 꼬부기 사망
 			{
-				PrintExplaneTextDB ("꼬부기는 쓰러졌다. ", Explain);
+				DotSetBG(BackGr);
+				DotSetMyPokemon(MyPokemon, 20, 2);
+				DotSetPokemon(pokemon[0], 0, 27);
+				PrintTextZone();
+				DotPrintScreen();
+				PrintExplainTextDB ("꼬부기는 쓰러졌다. ", Explain);
 				system("pause");
 			}
 		}
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ////////////////////////////////////////////////////// 파이리만 생존
 		{
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[0], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
-			PrintSkillText(Eevee[0]);
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			Fskill = ChoiceSkill();
+			PrintSkillText(MyPokemon);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
+			Fskill = ChoiceSkill(MyPokemon);
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[0], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
 
-			if (Fskill == 1)
+			PrintExplainText(" ", pokemon[0], MyPokemon, UsingSkill, Fskill);
+			result = ResultSkill(pokemon[0], MyPokemon, Fskill);
+			Sleep(1000);
+
+			if (result == 0)
 			{
-				PrintExplaneTextDB ("불꽃세례! ", Explain);
-				Sleep(1000);
-				pokemon[0].monhp -= 30;
-				PrintExplaneTextDB ("효과는 평범했다. ", Explain);
+				pokemon[0].monhp -= skill[MyPokemon.Skill1].Dmg / 2;
+				PrintExplainText("효과가 별로였다. ", pokemon[0], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 2)
+			else if (result == 1)
 			{
-				PrintExplaneTextDB ("물대포! ", Explain);
-				Sleep(1000);
-				pokemon[0].monhp -= 30 * 2;
-				PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
+				pokemon[0].monhp -= skill[MyPokemon.Skill1].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[0], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 3)
+			else if (result == 2)
 			{
-				PrintExplaneTextDB ("덩굴채찍! ", Explain);
-				Sleep(1000);
-				pokemon[0].monhp -= 30 / 2;
-				PrintExplaneTextDB ("효과는 별로였다. ", Explain);
+				pokemon[0].monhp -= skill[MyPokemon.Skill1].Dmg * 2;
+				PrintExplainText("효과가 굉장했다! ", pokemon[0], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 4)
+			else if (result == 3)
 			{
-				PrintExplaneTextDB ("HP회복! ", Explain);
-				Sleep(1000);
-				*hp += 50;
-				if (*hp > 100)*hp = 100;
-				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
+				pokemon[0].monhp -= skill[MyPokemon.Skill2].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[0], MyPokemon, Explain, 1);
 			}
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			else if (result == 4)
+			{
+				MyPokemon.monhp += skill[MyPokemon.Skill3].Dmg;
+				if (MyPokemon.monhp > 100)MyPokemon.monhp = 100;
+				PrintExplainText("체력을 회복했다. ", pokemon[0], MyPokemon, Explain, 1);
+			}
+			else continue;
+			if (pokemon[0].monhp < 0)pokemon[0].monhp = 0;
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) ///////////////// 클리어
@@ -854,7 +1053,7 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				PrintExplainTextDB ("전투에서 승리했다! ", Explain);
 				system("pause");
 				return 0;
 			}
@@ -862,47 +1061,53 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0) /////////////////////////////////////////////// 꼬부기만 생존
 		{
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[1], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
-			PrintSkillText(Eevee[0]);
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			Fskill = ChoiceSkill();
+			PrintSkillText(MyPokemon);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			system("pause");
+			Fskill = ChoiceSkill(MyPokemon);
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[1], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
 
-			if (Fskill == 1)
+			PrintExplainText(" ", pokemon[1], MyPokemon, UsingSkill, Fskill);
+			result = ResultSkill(pokemon[1], MyPokemon, Fskill);
+			Sleep(1000);
+
+			if (result == 0)
 			{
-				PrintExplaneTextDB ("불꽃세례! ", Explain);
-				Sleep(1000);
-				pokemon[1].monhp -= 30 / 2;
-				PrintExplaneTextDB ("효과는 별로였다. ", Explain);
+				pokemon[1].monhp -= skill[MyPokemon.Skill1].Dmg / 2;
+				PrintExplainText("효과가 별로였다. ", pokemon[1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 2)
+			else if (result == 1)
 			{
-				PrintExplaneTextDB ("물대포! ", Explain);
-				Sleep(1000);
-				pokemon[1].monhp -= 30;
-				PrintExplaneTextDB ("효과는 평범했다. ", Explain);
+				pokemon[1].monhp -= skill[MyPokemon.Skill1].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 3)
+			else if (result == 2)
 			{
-				PrintExplaneTextDB ("덩굴채찍! ", Explain);
-				Sleep(1000);
-				pokemon[1].monhp -= 30 * 2;
-				PrintExplaneTextDB ("효과는 굉장했다! ", Explain);
+				pokemon[1].monhp -= skill[MyPokemon.Skill1].Dmg * 2;
+				PrintExplainText("효과가 굉장했다! ", pokemon[1], MyPokemon, Explain, 1);
 			}
-			else if (Fskill == 4)
+			else if (result == 3)
 			{
-				PrintExplaneTextDB ("HP회복! ", Explain);
-				Sleep(1000);
-				*hp += 50;
-				if (*hp > 100)*hp = 100;
-				PrintExplaneTextDB ("체력이 회복됐다. ", Explain);
+				pokemon[1].monhp -= skill[MyPokemon.Skill2].Dmg;
+				PrintExplainText("효과는 보통이었다. ", pokemon[1], MyPokemon, Explain, 1);
 			}
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			else if (result == 4)
+			{
+				MyPokemon.monhp += skill[MyPokemon.Skill3].Dmg;
+				if (MyPokemon.monhp > 100)MyPokemon.monhp = 100;
+				PrintExplainText("체력을 회복했다. ", pokemon[1], MyPokemon, Explain, 1);
+			}
+			else continue;
+			if (pokemon[1].monhp < 0)pokemon[1].monhp = 0;
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
 			if (pokemon[0].monhp <= 0 && pokemon[1].monhp <= 0) //////// 클리어
@@ -910,7 +1115,7 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB ("전투에서 승리했다! ", Explain);
+				PrintExplainTextDB ("전투에서 승리했다! ", Explain);
 				system("pause");
 				return 0;
 			}
@@ -919,48 +1124,52 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		if (pokemon[0].monhp > 0 && pokemon[1].monhp > 0)////////////////////////////////////////////////////////////////////////////둘 다 생존 시 상대 공격
 		{
 			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 0, 5);
+			DotSetPokemon(pokemon[1], 0, 27);
+			DotSetMyPokemon(MyPokemon, 20, 2);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 2);
-			DotSetPokemon(pokemon[1], 2, 28); ///////////////////////////////////////// 둘 다 생존 시) 파이리 공격턴
 			DotPrintScreen();
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			PrintExplaneTextDB (" ", Enemy1Turn);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB (" ", Enemy1Turn);
 			Sleep(1000);
-			*hp -= 20;
+			MyPokemon.monhp -= 20;
 			DotPrintScreen();
-			PrintExplaneTextDB ("효과는 평범했다. ", Explain);
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB ("효과는 평범했다. ", Explain);
+			if (MyPokemon.monhp < 0)MyPokemon.monhp = 0;
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
-			if (*hp <= 0)
+			if (MyPokemon.monhp <= 0)
 			{
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB ("눈 앞이 새하얘졌다.. ", Explain);
+				PrintExplainTextDB ("눈 앞이 새하얘졌다.. ", Explain);
 				system("pause");
 				return 1;
 			}
 			DotSetBG(BackGr);
+			DotSetPokemon(pokemon[0], 0, 5);
+			DotSetPokemon(pokemon[1], 0, 27);
+			DotSetMyPokemon(MyPokemon, 20, 2);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 2);
-			DotSetPokemon(pokemon[1], 2, 28); ////////////////////////////////////////// 둘 다 생존 시) 꼬부기 공격턴
 			DotPrintScreen();
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			PrintExplaneTextDB(" ", Enemy2Turn);
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB(" ", Enemy2Turn);
 			Sleep(1000);
-			*hp -= 20;
+			MyPokemon.monhp -= 20;
 			DotPrintScreen();
-			PrintExplaneTextDB("효과는 평범했다. ", Explain);
-			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB("효과는 평범했다. ", Explain);
+			if (MyPokemon.monhp < 0)MyPokemon.monhp = 0;
+			printf("1번 체력: %d    2번 체력: %d     내 체력: %d \n", pokemon[0].monhp, pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
-			if (*hp <= 0)
+			if (MyPokemon.monhp <= 0)
 			{
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				PrintExplainTextDB("눈 앞이 새하얘졌다.. ", Explain);
 				system("pause");
 				return 1;
 			}
@@ -968,24 +1177,26 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		else if (pokemon[0].monhp > 0 && pokemon[1].monhp <= 0) ///////////////////////////////////////////////////////////////////////////파이리만 생존 시 상대 공격턴
 		{
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[0], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[0], 2, 15);
 			DotPrintScreen();
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			PrintExplaneTextDB(" ", Enemy1Turn);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB(" ", Enemy1Turn);
 			Sleep(1000);
-			*hp -= 20;
+			MyPokemon.monhp -= 20;
 			DotPrintScreen();
-			PrintExplaneTextDB("효과는 평범했다. ", Explain);
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB("효과는 평범했다. ", Explain);
+			if (MyPokemon.monhp < 0)MyPokemon.monhp = 0;
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[0].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
-			if (*hp <= 0)
+			if (MyPokemon.monhp <= 0)
 			{
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				PrintExplainTextDB("눈 앞이 새하얘졌다.. ", Explain);
 				system("pause");
 				return 1;
 			}
@@ -993,24 +1204,26 @@ int DoubleBattle(struct Pokemon* pokemon, int* hp)
 		else if (pokemon[0].monhp <= 0 && pokemon[1].monhp > 0) //////////////////////////////////////////////////////////////////////꼬부기만 생존 시 상대 공격턴
 		{
 			DotSetBG(BackGr);
+			DotSetMyPokemon(MyPokemon, 20, 2);
+			DotSetPokemon(pokemon[1], 0, 27);
 			PrintTextZone();
-			DotSetPokemon(pokemon[1], 2, 15);
 			DotPrintScreen();
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
-			PrintExplaneTextDB(" ", Enemy2Turn);
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB(" ", Enemy2Turn);
 			Sleep(1000);
-			*hp -= 20;
+			MyPokemon.monhp -= 20;
 			DotPrintScreen();
-			PrintExplaneTextDB("효과는 평범했다. ", Explain);
-			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, *hp); /////////////////////////////////// 임시 체력 표시
+			PrintExplainTextDB("효과는 평범했다. ", Explain);
+			if (MyPokemon.monhp < 0)MyPokemon.monhp = 0;
+			printf("상대 체력: %d        내 체력: %d \n", pokemon[1].monhp, MyPokemon.monhp); /////////////////////////////////// 임시 체력 표시
 			system("pause");
 
-			if (*hp <= 0)
+			if (MyPokemon.monhp <= 0)
 			{
 				DotSetBG(BackGr);
 				PrintTextZone();
 				DotPrintScreen();
-				PrintExplaneTextDB("눈 앞이 새하얘졌다.. ", Explain);
+				PrintExplainTextDB("눈 앞이 새하얘졌다.. ", Explain);
 				system("pause");
 				return 1;
 			}
@@ -1053,6 +1266,138 @@ void DotSetPokemon(struct Pokemon pokemon, int StartX, int StartY)
 		}
 	}
 }
+///////////////////////////////////////////////////////////////////////////////////////////// 아군 포켓몬 입히기 함수
+void DotSetMyPokemon(struct MyPokemon MyPokemon, int StartX, int StartY)
+{
+	for (int i = StartX; i < StartX + 19; i++)
+	{
+		for (int j = StartY; j < StartY + 22; j++)
+		{
+			if (MyPokemon.DotPokemon[i - StartX][j - StartY] == 99) continue;
+			else BattleField[i][j] = MyPokemon.DotPokemon[i - StartX][j - StartY];
+		}
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////////////// 스킬사용 결과 함수
+int ResultSkill(struct Pokemon pokemon, struct MyPokemon MyPokemon, int skillNum)
+{
+	int result = 0;
+	if (skillNum == 1)
+	{
+		if (skill[MyPokemon.Skill1].typeNum == Fire)
+		{
+			if (pokemon.typeNum == Fire)
+			{
+				result = 1;
+			}
+			else if (pokemon.typeNum == Leaf)
+			{
+				result = 2;
+			}
+			else if (pokemon.typeNum == Water)
+			{
+				result = 0;
+			}
+		}
+		else if (skill[MyPokemon.Skill1].typeNum == Water)
+		{
+			if (pokemon.typeNum == Fire)
+			{
+				result = 2;
+			}
+			else if (pokemon.typeNum == Leaf)
+			{
+				result = 0;
+			}
+			else if (pokemon.typeNum == Water)
+			{
+				result = 1;
+			}
+		}
+		else if (skill[MyPokemon.Skill1].typeNum == Leaf)
+		{
+			if (pokemon.typeNum == Fire)
+			{
+				result = 0;
+			}
+			else if (pokemon.typeNum == Leaf)
+			{
+				result = 1;
+			}
+			else if (pokemon.typeNum == Water)
+			{
+				result = 2;
+			}
+		}
+	}
+	else if (skillNum == 2)
+	{
+		result = 3;
+	}
+	else if (skillNum == 3)
+	{
+		result = 4;
+	}
+	return result;;
+}
+///////////////////////////////////////////////////////////////////////////////////////////// 스킬사용 결과 함수 더블 배틀
+int ResultSkillDB(int target, struct MyPokemon MyPokemon, int skillNum)
+{
+	int result = 0;
+	if (target == 1)
+	{
+		if (skillNum == 1)
+		{
+			if (skill[MyPokemon.Skill1].typeNum == Fire)
+			{
+				result = 1;
+			}
+			else if (skill[MyPokemon.Skill1].typeNum == Water)
+			{
+				result = 2;
+			}
+			else if (skill[MyPokemon.Skill1].typeNum == Leaf)
+			{
+				result = 0;
+			}
+		}
+		else if (skillNum == 2)
+		{
+			result = 3;
+		}
+		else if (skillNum == 3)
+		{
+			result = 4;
+		}
+	}
+	else if (target == 2)
+	{
+		if (skillNum == 1)
+		{
+			if (skill[MyPokemon.Skill1].typeNum == Fire)
+			{
+				result = 0;
+			}
+			else if (skill[MyPokemon.Skill1].typeNum == Water)
+			{
+				result = 1;
+			}
+			else if (skill[MyPokemon.Skill1].typeNum == Leaf)
+			{
+				result = 2;
+			}
+		}
+		else if (skillNum == 2)
+		{
+			result = 3;
+		}
+		else if (skillNum == 3)
+		{
+			result = 4;
+		}
+	}
+	return result;
+}
 //////////////////////////////////////////////////////////////////////////////////////////// 배경 입히기
 void DotSetBG(struct BackGr BackGr)
 {
@@ -1078,17 +1423,15 @@ void PrintTextZone()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////// 스킬 선택창 출력
-void PrintSkillText(struct MyPokemon Eevee)
+void PrintSkillText(struct MyPokemon MyPokemon)
 {
 	SetColor(0, 7);
 	gotoxy(21, 32);
-	printf(" %s", Eevee.Skill1);
+	printf(" %s", skill[MyPokemon.Skill1].name);
 	gotoxy(56, 32);
-	printf(" %s", Eevee.Skill2);
+	printf(" %s", skill[MyPokemon.Skill2].name);
 	gotoxy(21, 37);
-	printf(" %s", Eevee.Skill3);
-	gotoxy(56, 37);
-	printf(" %s", Eevee.Skill4);
+	printf(" %s", skill[MyPokemon.Skill3].name);
 	SetColor(15, 0);
 	gotoxy(0, 41);
 }
@@ -1111,7 +1454,7 @@ void PrintPickEnemyText(char* Enemy1, char* Enemy2, char* Enemy3, char* Enemy4)
 
 
 /////////////////////////////////////////////////////////////////////////////////////////// 설명창 출력
-void PrintExplaneText(char* Text, struct Pokemon pokemon, int Situation)
+void PrintExplainText(char* Text, struct Pokemon pokemon, struct MyPokemon MyPokemon, int Situation, int skillNum)
 {
 	SetColor(0, 7);
 	if (Situation == EncountEnemy)
@@ -1125,13 +1468,29 @@ void PrintExplaneText(char* Text, struct Pokemon pokemon, int Situation)
 	}
 	else if (Situation == Explain)
 	{
-		gotoxy(38, 34);
+		gotoxy(35, 34);
 		printf("%s", Text);
 	}
 	else if (Situation == EnemyTurn)
 	{
 		gotoxy(38, 34);
 		printf("%s의 몸통박치기! ", pokemon.name);
+	}
+	else if (Situation == UsingSkill)
+	{
+		gotoxy(38, 34);
+		if (skillNum == 1)
+		{
+			printf("%s!", skill[MyPokemon.Skill1].name);
+		}
+		else if (skillNum == 2)
+		{
+			printf("%s!", skill[MyPokemon.Skill2].name);
+		}
+		else if (skillNum == 3)
+		{
+			printf("%s!", skill[MyPokemon.Skill3].name);
+		}
 	}
 	SetColor(15, 0);
 	gotoxy(0, 41);
@@ -1144,7 +1503,7 @@ void gotoxy(int x, int y)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////// 더블배틀 설명창 출력
-void PrintExplaneTextDB(char* Text, int Situation)
+void PrintExplainTextDB(char* Text, int Situation)
 {
 	SetColor(0, 7);
 	if (Situation == EncountEnemy)
@@ -1183,7 +1542,7 @@ void PrintExplaneTextDB(char* Text, int Situation)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////// 스킬 고르기 함수
-int ChoiceSkill()
+int ChoiceSkill(struct MyPokemon MyPokemon)
 {
 	int ChoiceNum = 1;
 
@@ -1201,7 +1560,7 @@ int ChoiceSkill()
 			{
 				if (ArrowKeys == Right)
 				{
-					PrintSkillText(Eevee[0]);
+					PrintSkillText(MyPokemon);
 					SetColor(0, 7);
 					gotoxy(55, 32);
 					printf("▶");
@@ -1210,7 +1569,7 @@ int ChoiceSkill()
 				}
 				else if (ArrowKeys == Down)
 				{
-					PrintSkillText(Eevee[0]);
+					PrintSkillText(MyPokemon);
 					SetColor(0, 7);
 					gotoxy(20, 37);
 					printf("▶");
@@ -1223,21 +1582,12 @@ int ChoiceSkill()
 			{
 				if (ArrowKeys == Left)
 				{
-					PrintSkillText(Eevee[0]);
+					PrintSkillText(MyPokemon);
 					SetColor(0, 7);
 					gotoxy(20, 32);
 					printf("▶");
 					SetColor(15, 0);
 					ChoiceNum = 1;
-				}
-				else if (ArrowKeys == Down)
-				{
-					PrintSkillText(Eevee[0]);
-					SetColor(0, 7);
-					gotoxy(55, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 4;
 				}
 				else continue;
 			}
@@ -1245,46 +1595,16 @@ int ChoiceSkill()
 			{
 				if (ArrowKeys == Up)
 				{
-					PrintSkillText(Eevee[0]);
+					PrintSkillText(MyPokemon);
 					SetColor(0, 7);
 					gotoxy(20, 32);
 					printf("▶");
 					SetColor(15, 0);
 					ChoiceNum = 1;
 				}
-				else if (ArrowKeys == Right)
-				{
-					PrintSkillText(Eevee[0]);
-					SetColor(0, 7);
-					gotoxy(55, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 4;
-				}
 				else continue;
 			}
-			else if (ChoiceNum == 4)
-			{
-				if (ArrowKeys == Left)
-				{
-					PrintSkillText(Eevee[0]);
-					SetColor(0, 7);
-					gotoxy(20, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 3;
-				}
-				else if (ArrowKeys == Up)
-				{
-					PrintSkillText(Eevee[0]);
-					SetColor(0, 7);
-					gotoxy(55, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 2;
-				}
-				else continue;
-			}
+			else continue;
 		}
 		else if (ArrowKeys == 99)
 		{
@@ -1301,7 +1621,7 @@ int ChoiceSkill()
 }
 
 ///////////////////////////////////////////// 대전 상대 선택 함수
-int ChoiceMon()
+int ChoiceEnemyMon()
 {
 	int ChoiceNum = 1;
 
@@ -1433,7 +1753,7 @@ int ChoiceTarget()
 			{
 				if (ArrowKeys == Right)
 				{
-					PrintExplaneTextDB(" ", PickEnemy);
+					PrintExplainTextDB(" ", PickEnemy);
 					SetColor(0, 7);
 					gotoxy(54, 35);
 					printf("▶");
@@ -1446,7 +1766,7 @@ int ChoiceTarget()
 			{
 				if (ArrowKeys == Left)
 				{
-					PrintExplaneTextDB(" ", PickEnemy);
+					PrintExplainTextDB(" ", PickEnemy);
 					SetColor(0, 7);
 					gotoxy(29, 35);
 					printf("▶");
@@ -1477,4 +1797,100 @@ void CursorView(char show)
 	GetConsoleCursorInfo(hConsole, &cursorInfo);
 	cursorInfo.bVisible = show;
 	SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
+int ChoicePokeText()
+{
+	int ChoiceNum = 1;
+
+	SetColor(0, 7);
+	gotoxy(39, 32);
+	printf("▶");
+	SetColor(15, 0);
+
+	while (1)
+	{
+		int ArrowKeys = _getch();
+		if (ArrowKeys == 224 || ArrowKeys == 0)
+		{
+			ArrowKeys = _getch();
+			if (ChoiceNum == 1)
+			{
+				if (ArrowKeys == Down)
+				{
+					PrintPickPokeText(3);
+					SetColor(0, 7);
+					gotoxy(39, 34);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 2)
+			{
+				if (ArrowKeys == Up)
+				{
+					PrintPickPokeText(3);
+					SetColor(0, 7);
+					gotoxy(39, 32);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 1;
+				}
+				else if (ArrowKeys == Down)
+				{
+					PrintPickPokeText(3);
+					SetColor(0, 7);
+					gotoxy(39, 36);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 3;
+				}
+				else continue;
+			}
+			else if (ChoiceNum == 3)
+			{
+				if (ArrowKeys == Up)
+				{
+					PrintPickPokeText(3);
+					SetColor(0, 7);
+					gotoxy(39, 34);
+					printf("▶");
+					SetColor(15, 0);
+					ChoiceNum = 2;
+				}
+				else continue;
+			}
+			else continue;
+		}
+		else if (ArrowKeys == 99)
+		{
+			break;
+		}
+		else continue;
+	}
+	return ChoiceNum;
+}
+
+void PrintPickPokeText(int num)
+{
+	SetColor(0, 7);
+	if (num <= 3)
+	{
+		gotoxy(40, 32);
+		printf(" %s    %s", MyPokemon[0].name, MyPokemon[0].type);
+	}
+	if (num <= 3 && num > 1)
+	{
+		gotoxy(40, 34);
+		printf(" %s    %s", MyPokemon[1].name, MyPokemon[1].type);
+	}
+	if (num <= 3 && num > 2)
+	{
+		gotoxy(40, 36);
+		printf(" %s    %s", MyPokemon[2].name, MyPokemon[2].type);
+	}
+	SetColor(15, 0);
+	gotoxy(0, 41);
 }
