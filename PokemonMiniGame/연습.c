@@ -1,11 +1,15 @@
-/*
-#include <stdio.h>
+/*#include <stdio.h>
 #include<conio.h>
 #include<stdlib.h>
 #include<time.h>
 #define EMPTY -1
 #include<windows.h>
 
+#define Up 72
+#define Down 80
+#define Left 75
+#define Right 77*/
+/*
 void SetColor(int color,int back)
 {
 	SetConsolTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color|back);
@@ -1711,6 +1715,34 @@ void DotPrintBG(struct BackGr BackGr)
 		for (int j = 0; j < 50; j++)
 		{
 			BattleField[i][j] = BackGr.Grass[i][j];
+		}
+	}
+}*/
+
+/*static void SetColor(int color, int back)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color | (back << 4));
+}
+
+void gotoxy(int x, int y)
+{
+	COORD pos = { x,y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+int main(void)
+{
+	printf("최댓값 입력");
+	int Max = _getch();
+	printf("가로값 입력");
+	int Garo = _getch();
+
+	for (int i = 1; i <= Max; i++)
+	{
+		printf("%d ", i);
+		if (i % Garo == 0)
+		{
+			printf("\n");
 		}
 	}
 }*/

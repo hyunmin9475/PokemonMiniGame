@@ -6,6 +6,7 @@
 #include<string.h>
 
 ///////////////////////////////  상수파트
+#pragma region 상수
 #define PokemonDot_Garo 19
 #define PokemonDot_Sero 22
 #define BattleField_Garo 50
@@ -46,6 +47,7 @@
 #define LightMagenta 13
 #define LightYellow 14
 #define White 15
+#pragma endregion
 
 //빈 배경 초기화
 int BattleField[BattleField_Garo][BattleField_Sero] = {
@@ -354,6 +356,7 @@ struct Skill skill[5] = {
 ////함수////////
 ///////////////
 
+#pragma region 함수선언
 //도트 색 변경 함수 선언
 static void SetColor(int color, int back);
 
@@ -397,7 +400,7 @@ void PrintExplainTextDB(char* Text,  int Situation);
 int ChoiceSkill(struct MyPokemon MyPokemon);
 
 //화살표 및 상대 몬스터 선택 함수
-int ChoiceEnemyMon();
+int ChoiceOption(int NMax, int GMax);
 
 //화살표 및 더블배틀 스킬 타켓 선택 함수
 int ChoiceTarget();
@@ -419,6 +422,8 @@ int ResultSkill(struct Pokemon pokemon, struct MyPokemon MyPokemon, int skillNum
 
 //스킬 사용 시 상호작용 더블배틀 함수
 int ResultSkillDB(int target, struct MyPokemon MyPokemon, int skillNum);
+
+#pragma endregion
 
 
 ////////////////메인 함수////////////////////
@@ -513,17 +518,17 @@ int main(void)
 			system("pause");
 
 			//////////////야생 포켓몬 선택
-			pokeNum = ChoiceEnemyMon();
+			pokeNum = ChoiceOption(4, 2);
 
-			if (pokeNum == 4)
+			if (pokeNum == 3)
 				win = DoubleBattle(pokemon, MyPokemon[MyPoke-1]);  //////////////////////////////////////////////더블 배틀 함수 호출
-			else if (pokeNum != 1 && pokeNum != 2 && pokeNum != 3 && pokeNum != 4)
+			else if (pokeNum != 0 && pokeNum != 1 && pokeNum != 2 && pokeNum != 3)
 			{
 				system("cls");
 				continue;   /////선택지 외의 숫자 선택 시 다시 선택
 			}
 			else
-				win = Battle(pokemon[pokeNum - 1], MyPokemon[MyPoke-1]); //////////////////배틀함수 호출
+				win = Battle(pokemon[pokeNum], MyPokemon[MyPoke]); //////////////////배틀함수 호출
 
 			//int battle(struct Pokemon pokemon, int* hp);
 			//win = Battle(pokemon[pokeNum - 49], &hp); //////////////////배틀함수 호출
@@ -1440,14 +1445,14 @@ void PrintSkillText(struct MyPokemon MyPokemon)
 void PrintPickEnemyText(char* Enemy1, char* Enemy2, char* Enemy3, char* Enemy4)
 {
 	SetColor(0, 7);
-	gotoxy(21, 32);
-	printf(" %s", Enemy1);
-	gotoxy(56, 32);
-	printf(" %s", Enemy2);
-	gotoxy(21, 37);
-	printf(" %s", Enemy3);
-	gotoxy(56, 37);
-	printf(" %s", Enemy4);
+	gotoxy(22, 32);
+	printf("%s", Enemy1);
+	gotoxy(57, 32);
+	printf("%s", Enemy2);
+	gotoxy(22, 37);
+	printf("%s", Enemy3);
+	gotoxy(57, 37);
+	printf("%s", Enemy4);
 	SetColor(15, 0);
 	gotoxy(0, 41);
 }
@@ -1621,115 +1626,60 @@ int ChoiceSkill(struct MyPokemon MyPokemon)
 }
 
 ///////////////////////////////////////////// 대전 상대 선택 함수
-int ChoiceEnemyMon()
+int ChoiceOption(int NMax, int GMax)
 {
-	int ChoiceNum = 1;
+	int NumMax = NMax - 1;
+	int GaroMax = GMax;
+	int SeroMax = NMax / GMax;
+	if (NMax % GMax > 0) SeroMax += 1;
+	int temp = 0;
+	int ChoiceNum = 0;
 
 	SetColor(0, 7);
 	gotoxy(20, 32);
 	printf("▶");
-	SetColor(15, 0);
 	while (1)
 	{
 		int ArrowKeys = _getch();
 		if (ArrowKeys == 224 || ArrowKeys == 0)
 		{
+			gotoxy(20 + ChoiceNum % GaroMax * 35, 32 + ChoiceNum / GaroMax * 5);
+			printf("  ");
 			ArrowKeys = _getch();
-			if (ChoiceNum == 1)
+			if (ArrowKeys == Up)
 			{
-				if (ArrowKeys == Right)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(55, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 2;
-				}
-				else if (ArrowKeys == Down)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(20, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 3;
-				}
-				else continue;
+				ChoiceNum -= GaroMax;
+				temp = ChoiceNum;
+				if (ChoiceNum < 0)ChoiceNum = GaroMax * SeroMax + temp;
+				if (ChoiceNum > NumMax)ChoiceNum -= GaroMax;
 			}
-			else if (ChoiceNum == 2)
+			else if (ArrowKeys == Down)
 			{
-				if (ArrowKeys == Left)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(20, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 1;
-				}
-				else if (ArrowKeys == Down)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(55, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 4;
-				}
-				else continue;
+				ChoiceNum += GaroMax;
+				temp = ChoiceNum;
+				if (ChoiceNum > NumMax) ChoiceNum = temp % GaroMax;
 			}
-			else if (ChoiceNum == 3)
+			else if (ArrowKeys == Right)
 			{
-				if (ArrowKeys == Up)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(20, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 1;
-				}
-				else if (ArrowKeys == Right)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(55, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 4;
-				}
-				else continue;
+				ChoiceNum += 1;
+				temp = ChoiceNum ;
+				if (ChoiceNum % GaroMax == 0)ChoiceNum -= GaroMax;
+				else if (ChoiceNum > NumMax)ChoiceNum = GaroMax * SeroMax - GaroMax;
 			}
-			else if (ChoiceNum == 4)
+			else if (ArrowKeys == Left)
 			{
-				if (ArrowKeys == Left)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(20, 37);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 3;
-				}
-				else if (ArrowKeys == Up)
-				{
-					PrintPickEnemyText("1: 파이리   타입 : 불", "2: 꼬부기   타입: 물", "3: 이상해씨   타입: 풀", "4: 파이리  타입: 불   꼬부기  타입: 물 ");
-					SetColor(0, 7);
-					gotoxy(55, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 2;
-				}
-				else continue;
+				ChoiceNum -= 1;
+				temp = ChoiceNum + 1;
+				if (ChoiceNum == GaroMax * (temp / GaroMax) - 1 || ChoiceNum < 0)ChoiceNum += GaroMax;
+				if (ChoiceNum > NumMax)ChoiceNum = NumMax;
 			}
+			gotoxy(20 + ChoiceNum % GaroMax * 35, 32 + ChoiceNum / GaroMax * 5);
+			printf("▶");
 		}
-		else if (ArrowKeys == 99)
-		{
-			break;
-		}
+		else if (ArrowKeys == 99)break;
 		else continue;
 	}
+	SetColor(15, 0);
 	return ChoiceNum;
 }
 
@@ -1799,77 +1749,40 @@ void CursorView(char show)
 	SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
+//////////////////////////////////////////////// 아군 포켓몬 선택 함수
 int ChoicePokeText()
 {
-	int ChoiceNum = 1;
+	int ChoiceNum = 0;
 
 	SetColor(0, 7);
 	gotoxy(39, 32);
 	printf("▶");
-	SetColor(15, 0);
 
 	while (1)
 	{
 		int ArrowKeys = _getch();
 		if (ArrowKeys == 224 || ArrowKeys == 0)
 		{
+			gotoxy(39, 32 + ChoiceNum * 2);
+			printf("  ");
 			ArrowKeys = _getch();
-			if (ChoiceNum == 1)
+			if (ArrowKeys == Up)
 			{
-				if (ArrowKeys == Down)
-				{
-					PrintPickPokeText(3);
-					SetColor(0, 7);
-					gotoxy(39, 34);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 2;
-				}
-				else continue;
+				ChoiceNum -= 1;
+				if (ChoiceNum < 0)ChoiceNum += 3;
 			}
-			else if (ChoiceNum == 2)
+			else if (ArrowKeys == Down)
 			{
-				if (ArrowKeys == Up)
-				{
-					PrintPickPokeText(3);
-					SetColor(0, 7);
-					gotoxy(39, 32);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 1;
-				}
-				else if (ArrowKeys == Down)
-				{
-					PrintPickPokeText(3);
-					SetColor(0, 7);
-					gotoxy(39, 36);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 3;
-				}
-				else continue;
+				ChoiceNum += 1;
+				if (ChoiceNum > 2)ChoiceNum -= 3;
 			}
-			else if (ChoiceNum == 3)
-			{
-				if (ArrowKeys == Up)
-				{
-					PrintPickPokeText(3);
-					SetColor(0, 7);
-					gotoxy(39, 34);
-					printf("▶");
-					SetColor(15, 0);
-					ChoiceNum = 2;
-				}
-				else continue;
-			}
-			else continue;
+			gotoxy(39, 32 + ChoiceNum * 2);
+			printf("▶");
 		}
-		else if (ArrowKeys == 99)
-		{
-			break;
-		}
+		else if (ArrowKeys == 99) break;
 		else continue;
 	}
+	SetColor(15, 0);
 	return ChoiceNum;
 }
 
@@ -1878,18 +1791,18 @@ void PrintPickPokeText(int num)
 	SetColor(0, 7);
 	if (num <= 3)
 	{
-		gotoxy(40, 32);
-		printf(" %s    %s", MyPokemon[0].name, MyPokemon[0].type);
+		gotoxy(41, 32);
+		printf("%s    %s", MyPokemon[0].name, MyPokemon[0].type);
 	}
 	if (num <= 3 && num > 1)
 	{
-		gotoxy(40, 34);
-		printf(" %s    %s", MyPokemon[1].name, MyPokemon[1].type);
+		gotoxy(41, 34);
+		printf("%s    %s", MyPokemon[1].name, MyPokemon[1].type);
 	}
 	if (num <= 3 && num > 2)
 	{
-		gotoxy(40, 36);
-		printf(" %s    %s", MyPokemon[2].name, MyPokemon[2].type);
+		gotoxy(41, 36);
+		printf("%s    %s", MyPokemon[2].name, MyPokemon[2].type);
 	}
 	SetColor(15, 0);
 	gotoxy(0, 41);
